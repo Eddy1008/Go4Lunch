@@ -1,4 +1,4 @@
-package fr.zante.go4lunch.ui.slideshow;
+package fr.zante.go4lunch.ui.logout;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import fr.zante.go4lunch.databinding.FragmentSlideshowBinding;
+import fr.zante.go4lunch.databinding.FragmentLogoutBinding;
 
-public class SlideshowFragment extends Fragment {
+public class LogoutFragment extends Fragment {
 
-    private FragmentSlideshowBinding binding;
+    private FragmentLogoutBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        SlideshowViewModel slideshowViewModel =
-                new ViewModelProvider(this).get(SlideshowViewModel.class);
+        LogoutViewModel logoutViewModel =
+                new ViewModelProvider(this).get(LogoutViewModel.class);
 
-        binding = FragmentSlideshowBinding.inflate(inflater, container, false);
+        binding = FragmentLogoutBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textSlideshow;
-        slideshowViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textLogout;
+        logoutViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

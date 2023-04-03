@@ -1,4 +1,4 @@
-package fr.zante.go4lunch.ui.gallery;
+package fr.zante.go4lunch.ui.lunch;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,21 +11,23 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import fr.zante.go4lunch.databinding.FragmentGalleryBinding;
+import fr.zante.go4lunch.databinding.FragmentLunchBinding;
+import fr.zante.go4lunch.ui.gallery.GalleryViewModel;
 
-public class GalleryFragment extends Fragment {
+public class LunchFragment extends Fragment {
 
-    private FragmentGalleryBinding binding;
+    private FragmentLunchBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
+        LunchViewModel lunchViewModel =
+                new ViewModelProvider(this).get(LunchViewModel.class);
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        binding = FragmentLunchBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
-        galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textLunch;
+        lunchViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

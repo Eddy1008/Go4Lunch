@@ -3,23 +3,42 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    app:startDestination="@+id/nav_mapview">
 
     <fragment
-        android:id="@+id/nav_home"
-        android:name="fr.zante.go4lunch.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/nav_lunch"
+        android:name="fr.zante.go4lunch.ui.lunch.LunchFragment"
+        android:label="@string/menu_lunch"
+        tools:layout="@layout/fragment_lunch" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="fr.zante.go4lunch.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_settings"
+        android:name="fr.zante.go4lunch.ui.settings.SettingsFragment"
+        android:label="@string/menu_settings"
+        tools:layout="@layout/fragment_settings" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="fr.zante.go4lunch.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_logout"
+        android:name="fr.zante.go4lunch.ui.logout.LogoutFragment"
+        android:label="@string/menu_logout"
+        tools:layout="@layout/fragment_logout" />
+
+    <fragment
+        android:id="@+id/nav_mapview"
+        android:name="fr.zante.go4lunch.ui.mapview.MapviewFragment"
+        android:label="@string/menu_mapview"
+        tools:layout="@layout/fragment_mapview" />
+
+    <fragment
+        android:id="@+id/nav_listview"
+        android:name="fr.zante.go4lunch.ui.listview.ListviewFragment"
+        android:label="@string/menu_listview"
+        tools:layout="@layout/fragment_listview" />
+
+    <fragment
+        android:id="@+id/nav_workmates"
+        android:name="fr.zante.go4lunch.ui.workmates.WorkmatesFragment"
+        android:label="@string/menu_workmates"
+        tools:layout="@layout/fragment_workmates" />
+
 </navigation>

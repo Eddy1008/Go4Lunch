@@ -1,16 +1,16 @@
-package fr.zante.go4lunch.ui.slideshow;
+package fr.zante.go4lunch.ui.lunch;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class LunchViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public LunchViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("This is lunch fragment");
     }
 
     public LiveData<String> getText() {
