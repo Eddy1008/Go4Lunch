@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
@@ -32,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+        BottomNavigationView bottomNavigationView = binding.appBarMain.contentMain.bottomNavView;
+
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_lunch, R.id.nav_settings, R.id.nav_logout, R.id.nav_mapview, R.id.nav_listview, R.id.nav_workmates)
                 .setOpenableLayout(drawer)
@@ -41,11 +42,14 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
+
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // TODO
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
