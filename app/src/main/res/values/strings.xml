@@ -18,4 +18,6 @@
     <string name="menu_mapview">MAPVIEW</string>
     <string name="menu_listview">LISTVIEW</string>
     <string name="menu_workmates">WORKMATES</string>
+
+    <string name="action_localise_my_position">Localise my position</string>
 </resources>
