@@ -10,9 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import fr.zante.go4lunch.databinding.FragmentGalleryBinding;
 import fr.zante.go4lunch.databinding.FragmentSettingsBinding;
-import fr.zante.go4lunch.ui.gallery.GalleryViewModel;
 
 public class SettingsFragment extends Fragment {
 
