@@ -1,6 +1,11 @@
 package fr.zante.go4lunch.model;
 
-public class RestaurantJson {
+import androidx.annotation.Nullable;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+public class RestaurantJson implements Serializable {
 
     private String name;
     private String vicinity;
@@ -33,5 +38,18 @@ public class RestaurantJson {
     }
     public void setOpening_hours(OpeningJson opening_hours) {
         this.opening_hours = opening_hours;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        RestaurantJson restaurant = (RestaurantJson) obj;
+        return Objects.equals(name, restaurant.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

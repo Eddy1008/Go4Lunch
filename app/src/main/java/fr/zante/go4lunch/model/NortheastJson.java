@@ -1,6 +1,8 @@
 package fr.zante.go4lunch.model;
 
-public class NortheastJson {
+import java.io.Serializable;
+
+public class NortheastJson implements Serializable {
 
     private double lat;
     private double lng;

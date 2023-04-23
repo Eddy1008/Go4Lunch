@@ -1,6 +1,8 @@
 package fr.zante.go4lunch.model;
 
-public class LocationJson {
+import java.io.Serializable;
+
+public class LocationJson implements Serializable {
 
     private double lat;
     private double lng;

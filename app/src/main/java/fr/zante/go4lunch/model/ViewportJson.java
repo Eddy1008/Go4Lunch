@@ -1,6 +1,8 @@
 package fr.zante.go4lunch.model;
 
-public class ViewportJson {
+import java.io.Serializable;
+
+public class ViewportJson implements Serializable {
 
     private NortheastJson northeast;
     private SouthwestJson southwest;

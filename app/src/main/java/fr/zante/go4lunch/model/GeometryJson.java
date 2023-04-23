@@ -1,6 +1,8 @@
 package fr.zante.go4lunch.model;
 
-public class GeometryJson {
+import java.io.Serializable;
+
+public class GeometryJson implements Serializable {
 
     private LocationJson location;
     private ViewportJson viewport;

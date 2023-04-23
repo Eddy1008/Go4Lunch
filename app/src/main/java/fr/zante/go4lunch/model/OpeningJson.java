@@ -1,6 +1,8 @@
 package fr.zante.go4lunch.model;
 
-public class OpeningJson {
+import java.io.Serializable;
+
+public class OpeningJson implements Serializable {
 
     private boolean open_now;
 
