@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/item_workmates_photo"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        android:background="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/item_workmates_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Eddy make a choice: "
+        app:layout_constraintTop_toTopOf="@+id/item_workmates_photo"
+        app:layout_constraintBottom_toBottomOf="@+id/item_workmates_photo"
+        app:layout_constraintStart_toEndOf="@+id/item_workmates_photo"/>
+
+    <TextView
+        android:id="@+id/item_workmates_restaurant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="McDo"
+        app:layout_constraintBottom_toBottomOf="@+id/item_workmates_name"
+        app:layout_constraintStart_toEndOf="@+id/item_workmates_name"
+        app:layout_constraintTop_toTopOf="@+id/item_workmates_name" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -9,24 +9,45 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Arrays;
+import java.util.List;
 
 import fr.zante.go4lunch.databinding.FragmentWorkmatesBinding;
+import fr.zante.go4lunch.model.Member;
 
 public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding binding;
+    private RecyclerView recyclerView;
+    List<Member> members;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        WorkmatesViewModel workmatesViewModel =
-                new ViewModelProvider(this).get(WorkmatesViewModel.class);
 
         binding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textWorkmates;
-        workmatesViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        recyclerView = binding.workmatesRecyclerview;
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+
+        initList();
+
         return root;
+    }
+
+    private void initList() {
+        members = Arrays.asList(
+                new Member("eddy", "blabla", "McDo"),
+                new Member("melody", "blabla", "Flunch"),
+                new Member("ethan", "blabla", "Quick"),
+                new Member("cassandre", "blabla", "BK")
+        );
+        recyclerView.setAdapter(new WorkmatesRecyclerViewAdapter(members));
     }
 
     @Override
