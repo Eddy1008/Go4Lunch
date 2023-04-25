@@ -2,6 +2,7 @@ package fr.zante.go4lunch.ui.listview;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,6 +11,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+
+import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
@@ -28,6 +33,7 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
     public ListviewItemViewHolder(@NonNull View itemView) {
         super(itemView);
         // TODO image
+        restaurant_photo = itemView.findViewById(R.id.item_restaurant_photo);
         name = itemView.findViewById(R.id.item_restaurant_textview_name);
         address = itemView.findViewById(R.id.item_restaurant_textview_address);
         opening_info = itemView.findViewById(R.id.item_restaurant_textview_opening_info);
@@ -38,6 +44,13 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(RestaurantJson restaurant) {
         // TODO image
+        String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
+        String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
+        String myPhotoURL = myBasePhotoURL + restaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
+        Glide.with(this.restaurant_photo.getContext())
+                .load(myPhotoURL)
+                .apply(RequestOptions.circleCropTransform())
+                .into(restaurant_photo);
         name.setText(restaurant.getName());
         address.setText(restaurant.getVicinity());
         if (restaurant.getOpening_hours() == null) {

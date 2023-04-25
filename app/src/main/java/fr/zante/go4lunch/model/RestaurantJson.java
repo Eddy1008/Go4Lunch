@@ -3,6 +3,7 @@ package fr.zante.go4lunch.model;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 public class RestaurantJson implements Serializable {
@@ -11,6 +12,7 @@ public class RestaurantJson implements Serializable {
     private String vicinity;
     private GeometryJson geometry;
     private OpeningJson opening_hours;
+    private List<PhotoJson> photos;
 
     public String getName() {
         return name;
@@ -38,6 +40,14 @@ public class RestaurantJson implements Serializable {
     }
     public void setOpening_hours(OpeningJson opening_hours) {
         this.opening_hours = opening_hours;
+    }
+
+    public List<PhotoJson> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(List<PhotoJson> photos) {
+        this.photos = photos;
     }
 
     @Override

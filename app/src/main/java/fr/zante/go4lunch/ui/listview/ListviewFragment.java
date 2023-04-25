@@ -58,7 +58,7 @@ public class ListviewFragment extends Fragment {
         String myLocation = "50.6292,3.0573";
         String myResearchRadius = "1000";
         String myResearchType = "restaurant";
-        String myResearchFields = "name,geometry,opening_hours";
+        String myResearchFields = "name,geometry,opening_hours,formatted_phone_number,photos,website";
         String apiKey = BuildConfig.MAPS_API_KEY;
 
          // TODO call Api

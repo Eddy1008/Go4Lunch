@@ -7,6 +7,9 @@ import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+
+import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.databinding.ActivityRestaurantBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
 
@@ -33,6 +36,16 @@ public class RestaurantActivity extends AppCompatActivity {
         restaurant = (RestaurantJson) myBundle.get("RESTAURANT_OBJECT");
 
         binding.restaurantDetailName.setText(restaurant.getName());
+        binding.restaurantDetailAddress.setText(restaurant.getVicinity());
+
+
+        String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
+        String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
+        String myPhotoURL = myBasePhotoURL + restaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
+
+        Glide.with(this.getApplicationContext())
+                .load(myPhotoURL)
+                .into(binding.restaurantDetailPhoto);
 
     }
 
