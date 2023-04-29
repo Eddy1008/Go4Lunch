@@ -12,6 +12,7 @@ public class RetrofitService {
     private static final Gson gson = new GsonBuilder().setLenient().create();
     private static final OkHttpClient httpClient = new OkHttpClient.Builder().build();
     private static final String BASE_URL = "https://maps.googleapis.com/maps/api/place/";
+
     private static final Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(httpClient)

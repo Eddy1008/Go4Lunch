@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.zante.go4lunch.BuildConfig;
@@ -22,6 +24,8 @@ import fr.zante.go4lunch.data.GooglePlacesApi;
 import fr.zante.go4lunch.databinding.FragmentListviewBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.RestaurantsResult;
+import fr.zante.go4lunch.ui.RestaurantsViewModel;
+import fr.zante.go4lunch.ui.ViewModelFactory;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,8 +35,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ListviewFragment extends Fragment {
 
     private FragmentListviewBinding binding;
+
+    private List<RestaurantJson> restaurants = new ArrayList<>();
     private RecyclerView recyclerView;
-    List<RestaurantJson> restaurants;
+    private ListviewRecyclerViewAdapter adapter = new ListviewRecyclerViewAdapter(this.restaurants);
+    private RestaurantsViewModel restaurantsViewModel;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,6 +52,11 @@ public class ListviewFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
+        configureViewModel();
+        getRestaurants();
+        initList(restaurants);
+
+        /**
         // TODO create retrofit instance with GsonConverterFactory
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -85,14 +98,28 @@ public class ListviewFragment extends Fragment {
                 Toast.makeText(getActivity().getApplicationContext(), "Erreur serveur", Toast.LENGTH_SHORT).show();
             }
         });
+         */
 
         return root;
+    }
+
+    private void configureViewModel() {
+        this.restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
+        this.restaurantsViewModel.init();
+    }
+
+    private void getRestaurants() {
+        restaurantsViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
+            restaurants = new ArrayList<>(restaurantJsons);
+            adapter.updateRestaurants(restaurants);
+        });
     }
 
     private void initList(List<RestaurantJson> myList) {
         // TODO recupérer la liste de restaurant via un repository
         restaurants = myList;
-        recyclerView.setAdapter(new ListviewRecyclerViewAdapter(restaurants));
+        //recyclerView.setAdapter(new ListviewRecyclerViewAdapter(restaurants));
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

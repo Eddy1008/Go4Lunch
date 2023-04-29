@@ -42,6 +42,8 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         rating = itemView.findViewById(R.id.item_restaurant_textview_rating);
     }
 
+    //https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=AZose0lxVyW4qtEWyi1ygqmrHw4X8QxN97Jc8Iikga7x_jtnDmSDCrP45G3LYi4tCxr3736dS8qcJOSva48OOuiGSOTwtLE7CdvSBRYHG-YjwuUZiHfwNW0YA9PyeI59gI13drFNdqWXwfG4Rla1zt87G_e8nDYeMOv5AOPFajd7lnMnYNkL
+
     public void bind(RestaurantJson restaurant) {
         // TODO image
         String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";

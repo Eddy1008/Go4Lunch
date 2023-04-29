@@ -39,4 +39,9 @@ public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewIt
     public int getItemCount() {
         return restaurants.size();
     }
+
+    public void updateRestaurants(final List<RestaurantJson> restaurants) {
+        this.restaurants = restaurants;
+        this.notifyDataSetChanged();
+    }
 }

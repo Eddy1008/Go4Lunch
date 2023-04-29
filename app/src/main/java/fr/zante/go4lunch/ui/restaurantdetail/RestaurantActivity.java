@@ -46,7 +46,6 @@ public class RestaurantActivity extends AppCompatActivity {
         Glide.with(this.getApplicationContext())
                 .load(myPhotoURL)
                 .into(binding.restaurantDetailPhoto);
-
     }
 
     void setPreviousPageButton() {
