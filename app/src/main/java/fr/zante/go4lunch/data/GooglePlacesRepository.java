@@ -1,5 +1,7 @@
 package fr.zante.go4lunch.data;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -21,11 +23,10 @@ public class GooglePlacesRepository {
         this.googlePlacesAPi = googlePlacesAPi;
     }
 
-    public LiveData<List<RestaurantJson>> getRestaurantLiveData() {
+    public LiveData<List<RestaurantJson>> getRestaurantLiveData(String myLocation) {
         MutableLiveData<List<RestaurantJson>> restaurantJsonsMutableLiveData = new MutableLiveData<>();
 
-        String myLocation = "50.6292,3.0573";
-        String myResearchRadius = "1000";
+        String myResearchRadius = "500";
         String myResearchType = "restaurant";
         String myResearchFields = "name,geometry,opening_hours,formatted_phone_number,photos,website";
         String apiKey = BuildConfig.MAPS_API_KEY;

@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -33,6 +34,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
+import fr.zante.go4lunch.SharedViewModel;
 import fr.zante.go4lunch.databinding.FragmentMapviewBinding;
 
 public class MapviewFragment extends Fragment implements OnMapReadyCallback {
@@ -41,21 +43,20 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private FragmentMapviewBinding binding;
 
 
+    //SharedViewModel
+    private SharedViewModel sharedViewModel;
+    private String myLocation;
+
 
     private static final String TAG = MapviewFragment.class.getSimpleName();
 
     private PlacesClient placesClient;
-
     private FusedLocationProviderClient fusedLocationProviderClient;
 
     // A default location
     private final LatLng defaultLocation = new LatLng(50.6292, 3.0573);
     private static final int DEFAULT_ZOOM = 15;
-
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
     private boolean locationPermissionGranted;
-
     private Location lastKnownLocation;
 
     private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
@@ -87,6 +88,9 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
         // PlacesClient
         Places.initialize(getActivity().getApplicationContext(), BuildConfig.MAPS_API_KEY);
         placesClient = Places.createClient(this.getActivity().getApplicationContext());
+
+        //SharedViewModel
+        this.sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         // FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
@@ -128,26 +132,13 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
      * Prompts the user for permission to use the device location.
      */
     private void getLocationPermission() {
-        Log.d(TAG, "getLocationPermission: 0202");
         requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION);
-        /**
-        if (ContextCompat.checkSelfPermission(this.getActivity().getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            locationPermissionGranted = true;
-        } else {
-            ActivityCompat.requestPermissions(this.getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-         */
     }
 
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
     private void getDeviceLocation() {
-        Log.d(TAG, "getDeviceLocation: 0404");
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
@@ -165,6 +156,10 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                myLocation = String.valueOf(lastKnownLocation.getLatitude())
+                                        + ","
+                                        + String.valueOf(lastKnownLocation.getLongitude());
+                                sharedViewModel.setMyLocation(myLocation);
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
@@ -203,6 +198,5 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
             Log.e("Exception: %s", e.getMessage());
         }
     }
-
 
 }

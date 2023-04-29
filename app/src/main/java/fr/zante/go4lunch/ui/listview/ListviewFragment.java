@@ -1,6 +1,7 @@
 package fr.zante.go4lunch.ui.listview;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.zante.go4lunch.BuildConfig;
+import fr.zante.go4lunch.SharedViewModel;
 import fr.zante.go4lunch.data.GooglePlacesApi;
 import fr.zante.go4lunch.databinding.FragmentListviewBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
@@ -35,6 +37,10 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ListviewFragment extends Fragment {
 
     private FragmentListviewBinding binding;
+
+    //SharedViewModel
+    private SharedViewModel sharedViewModel;
+    private String myLocation;
 
     private List<RestaurantJson> restaurants = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -52,60 +58,20 @@ public class ListviewFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
+        // SharedViewModel
+        this.sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
+        myLocation = sharedViewModel.getMyLocation().getValue();
+
         configureViewModel();
         getRestaurants();
         initList(restaurants);
-
-        /**
-        // TODO create retrofit instance with GsonConverterFactory
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://maps.googleapis.com/maps/api/place/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        GooglePlacesApi service = retrofit.create(GooglePlacesApi.class);
-
-        // TODO get parameters used by api request
-        String myLocation = "50.6292,3.0573";
-        String myResearchRadius = "1000";
-        String myResearchType = "restaurant";
-        String myResearchFields = "name,geometry,opening_hours,formatted_phone_number,photos,website";
-        String apiKey = BuildConfig.MAPS_API_KEY;
-
-         // TODO call Api
-         Call<RestaurantsResult> result = service.getNearbyPlaces(
-                 myLocation,
-                 myResearchRadius,
-                 myResearchType,
-                 myResearchFields,
-                 apiKey);
-
-        result.enqueue(new Callback<RestaurantsResult>() {
-            @Override
-            public void onResponse(Call<RestaurantsResult> call, Response<RestaurantsResult> response) {
-                if (response.isSuccessful()) {
-                    // Recupere la liste de restaurant:
-                    List<RestaurantJson> myList = response.body().getRestaurants();
-                    // Alimenter le recyclerView avec cette liste:
-                    initList(myList);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RestaurantsResult> call, Throwable t) {
-                Toast.makeText(getActivity().getApplicationContext(), "Erreur serveur", Toast.LENGTH_SHORT).show();
-            }
-        });
-         */
 
         return root;
     }
 
     private void configureViewModel() {
         this.restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
-        this.restaurantsViewModel.init();
+        this.restaurantsViewModel.init(myLocation);
     }
 
     private void getRestaurants() {
