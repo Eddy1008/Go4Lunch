@@ -29,10 +29,8 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
     private TextView rating;
     private ImageView restaurant_photo;
 
-
     public ListviewItemViewHolder(@NonNull View itemView) {
         super(itemView);
-        // TODO image
         restaurant_photo = itemView.findViewById(R.id.item_restaurant_photo);
         name = itemView.findViewById(R.id.item_restaurant_textview_name);
         address = itemView.findViewById(R.id.item_restaurant_textview_address);
@@ -42,17 +40,16 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         rating = itemView.findViewById(R.id.item_restaurant_textview_rating);
     }
 
-    //https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=AZose0lxVyW4qtEWyi1ygqmrHw4X8QxN97Jc8Iikga7x_jtnDmSDCrP45G3LYi4tCxr3736dS8qcJOSva48OOuiGSOTwtLE7CdvSBRYHG-YjwuUZiHfwNW0YA9PyeI59gI13drFNdqWXwfG4Rla1zt87G_e8nDYeMOv5AOPFajd7lnMnYNkL
-
-    public void bind(RestaurantJson restaurant) {
-        // TODO image
-        String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
-        String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
-        String myPhotoURL = myBasePhotoURL + restaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
-        Glide.with(this.restaurant_photo.getContext())
-                .load(myPhotoURL)
-                .apply(RequestOptions.circleCropTransform())
-                .into(restaurant_photo);
+    public void bind(RestaurantJson restaurant, double lat, double lng) {
+        if (restaurant.getPhotos() != null) {
+            String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
+            String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
+            String myPhotoURL = myBasePhotoURL + restaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
+            Glide.with(this.restaurant_photo.getContext())
+                    .load(myPhotoURL)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(restaurant_photo);
+        }
         name.setText(restaurant.getName());
         address.setText(restaurant.getVicinity());
         if (restaurant.getOpening_hours() == null) {
@@ -64,13 +61,13 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
                 opening_info.setText("Fermé");
             }
         }
-        // TODO calculer la distance entre ma position et celle du restaurant
-        distance.setText("2km");
+        int myDistanceToRestaurant = (int) getDistanceToRestaurant(restaurant, lat, lng);
+        String myDistance = myDistanceToRestaurant + "m";
+        distance.setText(myDistance);
         // TODO recupérer le nombre de collegues inscrits pour ce resaurant
         subscription_number.setText("3");
         // TODO recupérer la note d'evaluation du restaurant
         rating.setText("XX");
-        // TODO
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,8 +76,22 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
                 myBundle.putSerializable("RESTAURANT_OBJECT", restaurant);
                 intent.putExtra("BUNDLE_RESTAURANT_CLICKED", myBundle);
                 view.getContext().startActivity(intent);
-                //Toast.makeText(view.getContext(), "ouvrira la fiche detail du restaurant : " + restaurant.getName(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private static double getDistanceToRestaurant(RestaurantJson restaurant, double myLat, double myLng) {
+        if ((restaurant.getGeometry().getLocation().getLat() == myLat)
+                && (restaurant.getGeometry().getLocation().getLng() == myLng)) {
+            return 0;
+        } else {
+            double theta = restaurant.getGeometry().getLocation().getLng() - myLng;
+            double dist = Math.sin(Math.toRadians(restaurant.getGeometry().getLocation().getLat())) * Math.sin(Math.toRadians(myLat))
+                    + Math.cos(Math.toRadians(restaurant.getGeometry().getLocation().getLat())) * Math.cos(Math.toRadians(myLat)) * Math.cos(Math.toRadians(theta));
+            dist = Math.acos(dist);
+            dist = Math.toDegrees(dist);
+            dist = dist * 60 * 1.1515 * 1.609344 * 1000;
+            return dist;
+        }
     }
 }

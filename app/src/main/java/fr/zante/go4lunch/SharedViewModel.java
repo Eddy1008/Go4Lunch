@@ -1,21 +1,23 @@
 package fr.zante.go4lunch;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.maps.model.LatLng;
+
 public class SharedViewModel extends ViewModel {
 
-    private static SharedViewModel mySharedViewModel;
+    private MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
 
-    private MutableLiveData<String> myLocation = new MutableLiveData<>();
-
-    public void setMyLocation(String newLocationValue) {
-        myLocation.setValue(newLocationValue);
+    public void setMyLatLng(LatLng myNewLatLng) {
+        myLatLng.setValue(myNewLatLng);
     }
 
-    public LiveData<String> getMyLocation() {
-        return this.myLocation;
+    public double getMyLat() {
+        return myLatLng.getValue().latitude;
+    }
+    public double getMyLng() {
+        return myLatLng.getValue().longitude;
     }
 
 }

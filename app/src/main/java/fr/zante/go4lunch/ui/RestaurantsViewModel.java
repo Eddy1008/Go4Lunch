@@ -20,11 +20,11 @@ public class RestaurantsViewModel extends ViewModel {
         this.repository = repository;
     }
 
-    public void init(String myLocation) {
+    public void init(double lat, double lng) {
         if (this.restaurantsData != null) {
             return;
         }
-        restaurantsData = repository.getRestaurantLiveData(myLocation);
+        restaurantsData = repository.getRestaurantLiveData(lat, lng);
     }
 
     public LiveData<List<RestaurantJson>> getRestaurants() {

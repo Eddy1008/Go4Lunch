@@ -16,9 +16,13 @@ import fr.zante.go4lunch.model.RestaurantJson;
 public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewItemViewHolder>{
 
     private List<RestaurantJson> restaurants;
+    private double myLat;
+    private double myLng;
 
-    public ListviewRecyclerViewAdapter(List<RestaurantJson> items) {
+    public ListviewRecyclerViewAdapter(List<RestaurantJson> items, double lat, double lng) {
         restaurants = items;
+        myLat = lat;
+        myLng = lng;
     }
 
     @NonNull
@@ -32,7 +36,7 @@ public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewIt
 
     @Override
     public void onBindViewHolder(@NonNull ListviewItemViewHolder holder, int position) {
-        holder.bind(restaurants.get(position));
+        holder.bind(restaurants.get(position), myLat, myLng);
     }
 
     @Override

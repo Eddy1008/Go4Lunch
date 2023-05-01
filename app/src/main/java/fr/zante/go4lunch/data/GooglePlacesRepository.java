@@ -23,15 +23,16 @@ public class GooglePlacesRepository {
         this.googlePlacesAPi = googlePlacesAPi;
     }
 
-    public LiveData<List<RestaurantJson>> getRestaurantLiveData(String myLocation) {
+    public LiveData<List<RestaurantJson>> getRestaurantLiveData(double lat, double lng) {
         MutableLiveData<List<RestaurantJson>> restaurantJsonsMutableLiveData = new MutableLiveData<>();
 
-        String myResearchRadius = "500";
+        String myNewLocationWithLatLng = lat + "," + lng;
+        String myResearchRadius = "900";
         String myResearchType = "restaurant";
         String myResearchFields = "name,geometry,opening_hours,formatted_phone_number,photos,website";
         String apiKey = BuildConfig.MAPS_API_KEY;
 
-        googlePlacesAPi.getNearbyPlaces(myLocation, myResearchRadius, myResearchType, myResearchFields, apiKey)
+        googlePlacesAPi.getNearbyPlaces(myNewLocationWithLatLng, myResearchRadius, myResearchType, myResearchFields, apiKey)
                 .enqueue(new Callback<RestaurantsResult>() {
                     @Override
                     public void onResponse(Call<RestaurantsResult> call, Response<RestaurantsResult> response) {

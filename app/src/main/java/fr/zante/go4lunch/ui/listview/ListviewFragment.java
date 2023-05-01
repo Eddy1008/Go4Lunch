@@ -40,11 +40,12 @@ public class ListviewFragment extends Fragment {
 
     //SharedViewModel
     private SharedViewModel sharedViewModel;
-    private String myLocation;
+    private double myLat = 0;
+    private double myLng = 0;
 
     private List<RestaurantJson> restaurants = new ArrayList<>();
     private RecyclerView recyclerView;
-    private ListviewRecyclerViewAdapter adapter = new ListviewRecyclerViewAdapter(this.restaurants);
+    private ListviewRecyclerViewAdapter adapter;
     private RestaurantsViewModel restaurantsViewModel;
 
 
@@ -60,18 +61,20 @@ public class ListviewFragment extends Fragment {
 
         // SharedViewModel
         this.sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        myLocation = sharedViewModel.getMyLocation().getValue();
+        myLat = sharedViewModel.getMyLat();
+        myLng = sharedViewModel.getMyLng();
+        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng);
 
         configureViewModel();
         getRestaurants();
-        initList(restaurants);
+        initList();
 
         return root;
     }
 
     private void configureViewModel() {
         this.restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
-        this.restaurantsViewModel.init(myLocation);
+        this.restaurantsViewModel.init(myLat, myLng);
     }
 
     private void getRestaurants() {
@@ -81,10 +84,7 @@ public class ListviewFragment extends Fragment {
         });
     }
 
-    private void initList(List<RestaurantJson> myList) {
-        // TODO recupérer la liste de restaurant via un repository
-        restaurants = myList;
-        //recyclerView.setAdapter(new ListviewRecyclerViewAdapter(restaurants));
+    private void initList() {
         recyclerView.setAdapter(adapter);
     }
 

@@ -45,7 +45,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
 
     //SharedViewModel
     private SharedViewModel sharedViewModel;
-    private String myLocation;
+    private LatLng myLatLng;
 
 
     private static final String TAG = MapviewFragment.class.getSimpleName();
@@ -156,10 +156,8 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                 map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                                myLocation = String.valueOf(lastKnownLocation.getLatitude())
-                                        + ","
-                                        + String.valueOf(lastKnownLocation.getLongitude());
-                                sharedViewModel.setMyLocation(myLocation);
+                                myLatLng = new LatLng( lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                                sharedViewModel.setMyLatLng(myLatLng);
                             }
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
