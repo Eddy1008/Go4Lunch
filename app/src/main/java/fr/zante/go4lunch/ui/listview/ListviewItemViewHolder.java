@@ -71,8 +71,8 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), RestaurantActivity.class);
                 Bundle myBundle = new Bundle();
-                myBundle.putSerializable("RESTAURANT_OBJECT", restaurant);
-                intent.putExtra("BUNDLE_RESTAURANT_CLICKED", myBundle);
+                myBundle.putString("RESTAURANT_PLACE_ID", restaurant.getPlace_id());
+                intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                 view.getContext().startActivity(intent);
             }
         });

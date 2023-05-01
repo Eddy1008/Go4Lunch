@@ -13,9 +13,11 @@ public class RestaurantsViewModel extends ViewModel {
     // Repository
     private final GooglePlacesRepository repository;
 
-    //DATA
+    // DATA
     private LiveData<List<RestaurantJson>> restaurantsData;
+    private LiveData<RestaurantJson> selectedRestaurant;
 
+    // Constructor
     public RestaurantsViewModel(GooglePlacesRepository repository) {
         this.repository = repository;
     }
@@ -30,4 +32,16 @@ public class RestaurantsViewModel extends ViewModel {
     public LiveData<List<RestaurantJson>> getRestaurants() {
         return this.restaurantsData;
     }
+
+    public void initSelectedRestaurant(String myPlaceId) {
+        /**
+        if (this.selectedRestaurant != null) {
+            return;
+        }
+         */
+        selectedRestaurant = repository.getRestaurantLiveDataById(myPlaceId);
+    }
+
+    public LiveData<RestaurantJson> getRestaurantById() { return this.selectedRestaurant; }
+
 }

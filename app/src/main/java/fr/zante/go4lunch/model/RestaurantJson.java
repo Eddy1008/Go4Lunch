@@ -9,6 +9,9 @@ import java.util.Objects;
 public class RestaurantJson implements Serializable {
 
     private String name;
+    private String place_id;
+    private String formatted_phone_number;
+    private String website;
     private String vicinity;
     private GeometryJson geometry;
     private OpeningJson opening_hours;
@@ -19,6 +22,23 @@ public class RestaurantJson implements Serializable {
     }
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPlace_id() {return place_id;}
+    public void setPlace_id(String place_id) {this.place_id = place_id;}
+
+    public String getFormatted_phone_number() {
+        return formatted_phone_number;
+    }
+    public void setFormatted_phone_number(String formatted_phone_number) {
+        this.formatted_phone_number = formatted_phone_number;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+    public void setWebsite(String website) {
+        this.website = website;
     }
 
     public String getVicinity() {

@@ -7,6 +7,7 @@ import java.util.List;
 
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.model.RestaurantJson;
+import fr.zante.go4lunch.model.RestaurantResultById;
 import fr.zante.go4lunch.model.RestaurantsResult;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -45,5 +46,28 @@ public class GooglePlacesRepository {
                 });
 
         return restaurantJsonsMutableLiveData;
+    }
+
+    public LiveData<RestaurantJson> getRestaurantLiveDataById(String myPlaceId) {
+        MutableLiveData<RestaurantJson> restaurantJsonByIdMutableLiveData = new MutableLiveData<>();
+
+        String myFields = "name,place_id,vicinity,geometry,opening_hours,formatted_phone_number,photos,website";
+        String apiKey = BuildConfig.MAPS_API_KEY;
+
+        googlePlacesAPi.getPlaceInfoById(myPlaceId, myFields, apiKey).enqueue(new Callback<RestaurantResultById>() {
+            @Override
+            public void onResponse(Call<RestaurantResultById> call, Response<RestaurantResultById> response) {
+                if (response.body() != null) {
+                    restaurantJsonByIdMutableLiveData.setValue(response.body().getResult());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RestaurantResultById> call, Throwable t) {
+                restaurantJsonByIdMutableLiveData.setValue(null);
+            }
+        });
+
+        return restaurantJsonByIdMutableLiveData;
     }
 }
