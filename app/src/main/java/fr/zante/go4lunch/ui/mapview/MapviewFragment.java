@@ -1,6 +1,5 @@
 package fr.zante.go4lunch.ui.mapview;
 
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,8 +12,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -42,11 +39,9 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private FragmentMapviewBinding binding;
 
-
     //SharedViewModel
     private SharedViewModel sharedViewModel;
     private LatLng myLatLng;
-
 
     private static final String TAG = MapviewFragment.class.getSimpleName();
 
@@ -76,8 +71,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                 }
             }
     );
-
-
 
     @Nullable
     @Override
@@ -111,12 +104,9 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
         return root;
     }
 
-
-
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-
         map.addMarker(new MarkerOptions().position(defaultLocation).title("Marker Lille"));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
 
