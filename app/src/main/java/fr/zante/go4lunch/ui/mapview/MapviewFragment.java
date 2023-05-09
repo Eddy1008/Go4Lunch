@@ -43,8 +43,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private SharedViewModel sharedViewModel;
     private LatLng myLatLng;
 
-    private static final String TAG = MapviewFragment.class.getSimpleName();
-
     private PlacesClient placesClient;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -110,11 +108,8 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
         map.addMarker(new MarkerOptions().position(defaultLocation).title("Marker Lille"));
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
 
-        // Prompt the user for permission.
         getLocationPermission();
-        // Turn on the My Location layer and the related control on the map.
         updateLocationUI();
-        // Get the current location of the device and set the position of the map.
         getDeviceLocation();
     }
 
@@ -129,10 +124,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
      * Gets the current location of the device, and positions the map's camera.
      */
     private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
         try {
             if (locationPermissionGranted) {
                 Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
@@ -150,8 +141,8 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                 sharedViewModel.setMyLatLng(myLatLng);
                             }
                         } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
+                            Log.d("TAG", "Current location is null. Using defaults.");
+                            Log.e("TAG", "Exception: %s", task.getException());
                             map.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
                             map.getUiSettings().setMyLocationButtonEnabled(false);
@@ -168,7 +159,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
     private void updateLocationUI() {
-        Log.d(TAG, "updateLocationUI: 0303");
         if (map == null) {
             return;
         }

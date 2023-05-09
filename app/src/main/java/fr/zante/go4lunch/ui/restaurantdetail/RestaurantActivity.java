@@ -51,8 +51,6 @@ public class RestaurantActivity extends AppCompatActivity {
         this.restaurantsViewModel.initSelectedRestaurant(myPlaceId);
         this.restaurantsViewModel.getRestaurantById().observe(this, restaurantJson -> {
 
-            //restaurant = restaurantJson;
-
             binding.restaurantDetailName.setText(restaurantJson.getName());
             binding.restaurantDetailAddress.setText(restaurantJson.getVicinity());
             String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
@@ -68,7 +66,6 @@ public class RestaurantActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
                     intent.setData(Uri.parse("tel:" + restaurantJson.getFormatted_phone_number()));
-                    //startActivity(intent);
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                         startActivity(intent);
                     } else {
@@ -96,21 +93,7 @@ public class RestaurantActivity extends AppCompatActivity {
                     }
                 });
             }
-
         });
-
-        /**
-        binding.restaurantDetailName.setText(restaurant.getName());
-        binding.restaurantDetailAddress.setText(restaurant.getVicinity());
-
-        String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
-        String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
-        String myPhotoURL = myBasePhotoURL + restaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
-
-        Glide.with(this.getApplicationContext())
-                .load(myPhotoURL)
-                .into(binding.restaurantDetailPhoto);
-         */
     }
 
     void setPreviousPageButton() {

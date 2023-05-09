@@ -7,6 +7,8 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.NavController;
@@ -17,12 +19,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import fr.zante.go4lunch.databinding.ActivityMainBinding;
+import fr.zante.go4lunch.databinding.NavHeaderMainBinding;
+import fr.zante.go4lunch.ui.login.LoginActivity;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    private FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        getUserInfo();
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -59,6 +67,22 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void getUserInfo() {
+        // Get user:
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        if (firebaseUser == null) {
+            // error : user not logged
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        } else {
+            String userEmail = firebaseUser.getEmail();
+            // TODO binding navView navHeaderMain ???
+            NavHeaderMainBinding navHeaderMainBinding = NavHeaderMainBinding.bind(binding.navView.getHeaderView(0));
+            navHeaderMainBinding.textViewMail.setText(userEmail);
+
+        }
     }
 
     @Override
