@@ -104,10 +104,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (authResult.getAdditionalUserInfo().isNewUser()) {
                             // new user, account created:
                             Log.d(TAG, "onSuccess: Account created ... \n" + userEmail);
+                            // TODO ajouter un utilisateur en BDD
                             Toast.makeText(LoginActivity.this, "Account created ... \n" + userEmail, Toast.LENGTH_SHORT).show();
                         } else {
                             // existing user logged in
                             Log.d(TAG, "onSuccess: Existing user ... \n" + userEmail);
+                            // TODO recuperer les données connues de l'utilisateur
                             Toast.makeText(LoginActivity.this, "Welcome back ... \n" + userEmail, Toast.LENGTH_SHORT).show();
                         }
 

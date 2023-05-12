@@ -2,9 +2,13 @@ package fr.zante.go4lunch;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,6 +26,7 @@ import fr.zante.go4lunch.databinding.ActivityMainBinding;
 import fr.zante.go4lunch.databinding.NavHeaderMainBinding;
 import fr.zante.go4lunch.ui.login.LoginActivity;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
+import fr.zante.go4lunch.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = binding.appBarMain.contentMain.bottomNavView;
 
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_settings, R.id.nav_logout, R.id.nav_mapview, R.id.nav_listview, R.id.nav_workmates)
+                R.id.nav_mapview, R.id.nav_listview, R.id.nav_workmates)
                 .setOpenableLayout(drawer)
                 .build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -67,6 +72,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        binding.navView.getMenu().getItem(1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
+                startActivity(intent);
+                return false;
+            }
+        });
+        
+        binding.navView.getMenu().getItem(2).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                firebaseAuth.signOut();
+                getUserInfo();
+                return false;
+            }
+        });
     }
 
     private void getUserInfo() {
@@ -78,10 +100,16 @@ public class MainActivity extends AppCompatActivity {
             finish();
         } else {
             String userEmail = firebaseUser.getEmail();
-            // TODO binding navView navHeaderMain ???
+            String userName = firebaseUser.getDisplayName();
             NavHeaderMainBinding navHeaderMainBinding = NavHeaderMainBinding.bind(binding.navView.getHeaderView(0));
             navHeaderMainBinding.textViewMail.setText(userEmail);
-
+            navHeaderMainBinding.textViewName.setText(userName);
+            Glide.with(this)
+                    .load(firebaseUser.getPhotoUrl())
+                    .apply(new RequestOptions().override(200, 200))
+                    .into(navHeaderMainBinding.imageViewAvatar);
+            String id = firebaseUser.getUid();
+            Log.d("TAG", "getUserInfo: Uid = " + id);
         }
     }
 
