@@ -24,7 +24,7 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
 
     public void bind(Member member) {
         name.setText(member.getName());
-        restaurantName.setText(member.getSelectedRestaurantName());
+        restaurantName.setText(member.getSelectedRestaurantId());
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

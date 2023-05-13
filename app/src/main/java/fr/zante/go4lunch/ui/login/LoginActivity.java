@@ -24,9 +24,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.ArrayList;
+
 import fr.zante.go4lunch.MainActivity;
 import fr.zante.go4lunch.R;
+import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityLoginBinding;
+import fr.zante.go4lunch.model.Member;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -104,12 +108,12 @@ public class LoginActivity extends AppCompatActivity {
                         if (authResult.getAdditionalUserInfo().isNewUser()) {
                             // new user, account created:
                             Log.d(TAG, "onSuccess: Account created ... \n" + userEmail);
-                            // TODO ajouter un utilisateur en BDD
+                            // TODO WIP ajouter un member en BDD
+                            addMemberToDatabase(firebaseUser);
                             Toast.makeText(LoginActivity.this, "Account created ... \n" + userEmail, Toast.LENGTH_SHORT).show();
                         } else {
                             // existing user logged in
                             Log.d(TAG, "onSuccess: Existing user ... \n" + userEmail);
-                            // TODO recuperer les données connues de l'utilisateur
                             Toast.makeText(LoginActivity.this, "Welcome back ... \n" + userEmail, Toast.LENGTH_SHORT).show();
                         }
 
@@ -127,16 +131,16 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser.isEmailVerified()) {
-
-        }
+    private void addMemberToDatabase(FirebaseUser firebaseUser) {
+        Member member = new Member(
+                firebaseUser.getUid(),
+                firebaseUser.getDisplayName(),
+                firebaseUser.getEmail(),
+                "",
+                "ChIJcxi2sojVwkcRGbFnQjPp7xU",
+                new ArrayList<>()
+        );
+        MemberRepository memberRepository = MemberRepository.getInstance();
+        memberRepository.addMember(member);
     }
-    */
 }

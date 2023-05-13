@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -22,8 +24,10 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityMainBinding;
 import fr.zante.go4lunch.databinding.NavHeaderMainBinding;
+import fr.zante.go4lunch.model.Member;
 import fr.zante.go4lunch.ui.login.LoginActivity;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 import fr.zante.go4lunch.ui.settings.SettingsActivity;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private FirebaseAuth firebaseAuth;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,18 @@ public class MainActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         getUserInfo();
+
+
+        /**
+        // TODO WIP Recupérer les données du member actif
+        MemberRepository memberRepository = MemberRepository.getInstance();
+        memberRepository.updateData();
+        Log.d("TAG", "onCreate: userId = " + userId );
+        Member member = memberRepository.getMemberById(userId);
+        Log.d("TAG", "onCreate: userId = " + userId + " member.getMemberId() = " + member.getMemberId());
+        */
+
+
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -65,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 Intent intent = new Intent(getApplicationContext(), RestaurantActivity.class);
                 Bundle myBundle = new Bundle();
+                // TODO utiliser les données du member actif : member.getSelectedRestaurantId()
                 myBundle.putString("RESTAURANT_PLACE_ID", "ChIJcxi2sojVwkcRGbFnQjPp7xU");
                 intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                 startActivity(intent);
@@ -85,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 firebaseAuth.signOut();
+                GoogleSignInOptions gso = new GoogleSignInOptions
+                        .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
+                GoogleSignIn.getClient(MainActivity.this, gso).signOut();
                 getUserInfo();
                 return false;
             }
@@ -108,8 +132,9 @@ public class MainActivity extends AppCompatActivity {
                     .load(firebaseUser.getPhotoUrl())
                     .apply(new RequestOptions().override(200, 200))
                     .into(navHeaderMainBinding.imageViewAvatar);
-            String id = firebaseUser.getUid();
-            Log.d("TAG", "getUserInfo: Uid = " + id);
+
+            userId = firebaseUser.getUid();
+            Log.d("TAG", "getUserInfo: Uid = " + userId);
         }
     }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,10 +41,10 @@ public class WorkmatesFragment extends Fragment {
 
     private void initList() {
         members = Arrays.asList(
-                new Member("eddy", "blabla", "McDo"),
-                new Member("melody", "blabla", "Flunch"),
-                new Member("ethan", "blabla", "Quick"),
-                new Member("cassandre", "blabla", "BK")
+                new Member("0","eddy", "abcdef0@test.com", "blabla", "McDo", new ArrayList<>()),
+                new Member("1","melody", "abcdef1@test.com","blabla", "Flunch", new ArrayList<>()),
+                new Member("2","ethan", "abcdef2@test.com","blabla", "Quick", new ArrayList<>()),
+                new Member("3","cassandre", "abcdef3@test.com","blabla", "BK", new ArrayList<>())
         );
         recyclerView.setAdapter(new WorkmatesRecyclerViewAdapter(members));
     }
