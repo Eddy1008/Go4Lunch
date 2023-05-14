@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 
 import fr.zante.go4lunch.BuildConfig;
+import fr.zante.go4lunch.SharedViewModel;
+import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityRestaurantBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.ui.RestaurantsViewModel;
@@ -27,8 +29,10 @@ import fr.zante.go4lunch.ui.ViewModelFactory;
 public class RestaurantActivity extends AppCompatActivity {
 
     private ActivityRestaurantBinding binding;
-    private RestaurantJson restaurant;
     private RestaurantsViewModel restaurantsViewModel;
+    private String userId;
+    private MemberRepository repository;
+    private String restaurantId;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,18 +41,25 @@ public class RestaurantActivity extends AppCompatActivity {
         binding = ActivityRestaurantBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        repository = MemberRepository.getInstance();
+        repository.updateData();
+
+        getRestaurantId();
         setPreviousPageButton();
+        setSelectedRestaurantButton();
         getRestaurantDataFromBundle();
     }
 
-    void getRestaurantDataFromBundle() {
+    void getRestaurantId() {
         Intent intent = getIntent();
-
         Bundle myBundle = intent.getBundleExtra("BUNDLE_RESTAURANT_SELECTED");
-        String myPlaceId = (String) myBundle.get("RESTAURANT_PLACE_ID");
+        restaurantId = (String) myBundle.get("RESTAURANT_PLACE_ID");
+        userId = (String) myBundle.get("USER_ID");
+    }
 
+    void getRestaurantDataFromBundle() {
         this.restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
-        this.restaurantsViewModel.initSelectedRestaurant(myPlaceId);
+        this.restaurantsViewModel.initSelectedRestaurant(this.restaurantId);
         this.restaurantsViewModel.getRestaurantById().observe(this, restaurantJson -> {
 
             binding.restaurantDetailName.setText(restaurantJson.getName());
@@ -92,6 +103,17 @@ public class RestaurantActivity extends AppCompatActivity {
                         Toast.makeText(RestaurantActivity.this, "No website for the moment !", Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        });
+    }
+    
+    void setSelectedRestaurantButton() {
+        binding.restaurantDetailFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(RestaurantActivity.this, "Will set this restaurant like your choice for today's lunch", Toast.LENGTH_SHORT).show();
+                repository.updateMemberSelectedRestaurant(userId, restaurantId);
+                Toast.makeText(RestaurantActivity.this, "Choix du restaurant mis à jour", Toast.LENGTH_SHORT).show();
             }
         });
     }

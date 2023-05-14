@@ -7,12 +7,14 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class SharedViewModel extends ViewModel {
 
-    private MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
+    private MutableLiveData<String> myUserId = new MutableLiveData<>();
+    public void setMyUserId(String userId) { myUserId.setValue(userId); }
+    public String getMyUserId() { return myUserId.getValue(); }
 
+    private MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
     public void setMyLatLng(LatLng myNewLatLng) {
         myLatLng.setValue(myNewLatLng);
     }
-
     public double getMyLat() {
         return myLatLng.getValue().latitude;
     }

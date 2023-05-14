@@ -17,12 +17,15 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.List;
 
 import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityMainBinding;
@@ -37,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private FirebaseAuth firebaseAuth;
+    private SharedViewModel sharedViewModel;
     private String userId;
 
     @Override
@@ -51,17 +55,11 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         getUserInfo();
 
-
-        /**
-        // TODO WIP Recupérer les données du member actif
         MemberRepository memberRepository = MemberRepository.getInstance();
         memberRepository.updateData();
-        Log.d("TAG", "onCreate: userId = " + userId );
-        Member member = memberRepository.getMemberById(userId);
-        Log.d("TAG", "onCreate: userId = " + userId + " member.getMemberId() = " + member.getMemberId());
-        */
 
-
+        this.sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+        sharedViewModel.setMyUserId(userId);
 
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
@@ -80,10 +78,14 @@ public class MainActivity extends AppCompatActivity {
         binding.navView.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
+                Member member = memberRepository.getMemberById(userId);
+                Log.d("TAG", "onCreate: userId = " + userId + " member.getMemberId() = " + member.getMemberId());
+
                 Intent intent = new Intent(getApplicationContext(), RestaurantActivity.class);
                 Bundle myBundle = new Bundle();
                 // TODO utiliser les données du member actif : member.getSelectedRestaurantId()
-                myBundle.putString("RESTAURANT_PLACE_ID", "ChIJcxi2sojVwkcRGbFnQjPp7xU");
+                myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
+                myBundle.putString("USER_ID", userId);
                 intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                 startActivity(intent);
                 return false;

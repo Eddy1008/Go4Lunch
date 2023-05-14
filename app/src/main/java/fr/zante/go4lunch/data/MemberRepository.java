@@ -3,6 +3,7 @@ package fr.zante.go4lunch.data;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +20,7 @@ public class MemberRepository {
 
     private static MemberRepository repository;
     private List<Member> membersList = new ArrayList<>();
+    private LiveData<List<Member>> membersListLiveData;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("members");
@@ -41,15 +43,16 @@ public class MemberRepository {
 
                     if (member != null) {
                         membersList.add(member);
+                        Log.d("MemberRepository.update", "onDataChange: member Created : " + member.getName());
                     } else {
-                        Log.d("MemberRepository", "onDataChange: member Null !!!");
+                        Log.d("MemberRepository.update", "onDataChange: member Null !!!");
                     }
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("MemberRepository", "onCancelled: read database failed");
+                Log.d("MemberRepository.update", "onCancelled: read database failed");
             }
         });
     }
@@ -67,10 +70,14 @@ public class MemberRepository {
         return null;
     }
 
-    // TODO à corriger ! remplace la donnée actuelle au lieu d'en ajouter !!
     public void addMember(Member member) {
-        myRef.child(member.getMemberId()).setValue(member);
+        myRef.child(member.getName()).setValue(member);
     }
 
+    public void updateMemberSelectedRestaurant(String userId, String selectedRestaurantId) {
+        Member memberToUpdate = getMemberById(userId);
+        memberToUpdate.setSelectedRestaurantId(selectedRestaurantId);
+        myRef.child(memberToUpdate.getName()).setValue(memberToUpdate);
+    }
 
 }

@@ -20,6 +20,8 @@ public class Member {
         this.restaurantsLikedId = restaurantsLikedId;
     }
 
+    public Member() {}
+
     public String getMemberId() {
         return memberId;
     }

@@ -34,11 +34,6 @@ public class RestaurantsViewModel extends ViewModel {
     }
 
     public void initSelectedRestaurant(String myPlaceId) {
-        /**
-        if (this.selectedRestaurant != null) {
-            return;
-        }
-         */
         selectedRestaurant = repository.getRestaurantLiveDataById(myPlaceId);
     }
 

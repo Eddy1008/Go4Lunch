@@ -18,11 +18,13 @@ public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewIt
     private List<RestaurantJson> restaurants;
     private double myLat;
     private double myLng;
+    private String userId;
 
-    public ListviewRecyclerViewAdapter(List<RestaurantJson> items, double lat, double lng) {
+    public ListviewRecyclerViewAdapter(List<RestaurantJson> items, double lat, double lng, String id) {
         restaurants = items;
         myLat = lat;
         myLng = lng;
+        userId = id;
     }
 
     @NonNull
@@ -36,7 +38,7 @@ public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewIt
 
     @Override
     public void onBindViewHolder(@NonNull ListviewItemViewHolder holder, int position) {
-        holder.bind(restaurants.get(position), myLat, myLng);
+        holder.bind(restaurants.get(position), myLat, myLng, userId);
     }
 
     @Override

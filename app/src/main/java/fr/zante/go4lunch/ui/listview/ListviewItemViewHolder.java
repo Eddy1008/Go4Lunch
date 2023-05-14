@@ -38,7 +38,7 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         rating = itemView.findViewById(R.id.item_restaurant_textview_rating);
     }
 
-    public void bind(RestaurantJson restaurant, double lat, double lng) {
+    public void bind(RestaurantJson restaurant, double lat, double lng, String userId) {
         if (restaurant.getPhotos() != null) {
             String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
             String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
@@ -72,6 +72,7 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
                 Intent intent = new Intent(view.getContext(), RestaurantActivity.class);
                 Bundle myBundle = new Bundle();
                 myBundle.putString("RESTAURANT_PLACE_ID", restaurant.getPlace_id());
+                myBundle.putString("USER_ID", userId);
                 intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                 view.getContext().startActivity(intent);
             }
