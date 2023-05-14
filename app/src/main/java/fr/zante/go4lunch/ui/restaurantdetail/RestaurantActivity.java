@@ -33,6 +33,7 @@ public class RestaurantActivity extends AppCompatActivity {
     private String userId;
     private MemberRepository repository;
     private String restaurantId;
+    private String restaurantName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,13 +45,13 @@ public class RestaurantActivity extends AppCompatActivity {
         repository = MemberRepository.getInstance();
         repository.updateData();
 
-        getRestaurantId();
+        getInfoFromIntent();
         setPreviousPageButton();
         setSelectedRestaurantButton();
         getRestaurantDataFromBundle();
     }
 
-    void getRestaurantId() {
+    void getInfoFromIntent() {
         Intent intent = getIntent();
         Bundle myBundle = intent.getBundleExtra("BUNDLE_RESTAURANT_SELECTED");
         restaurantId = (String) myBundle.get("RESTAURANT_PLACE_ID");
@@ -104,6 +105,9 @@ public class RestaurantActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            // used if selected button clicked
+            restaurantName = restaurantJson.getName();
         });
     }
     
@@ -112,7 +116,7 @@ public class RestaurantActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //Toast.makeText(RestaurantActivity.this, "Will set this restaurant like your choice for today's lunch", Toast.LENGTH_SHORT).show();
-                repository.updateMemberSelectedRestaurant(userId, restaurantId);
+                repository.updateMemberSelectedRestaurant(userId, restaurantId, restaurantName);
                 Toast.makeText(RestaurantActivity.this, "Choix du restaurant mis à jour", Toast.LENGTH_SHORT).show();
             }
         });

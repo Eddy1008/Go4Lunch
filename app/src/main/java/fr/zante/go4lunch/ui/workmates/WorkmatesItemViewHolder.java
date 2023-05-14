@@ -29,7 +29,7 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void bind(Member member) {
-        String toDisplay = member.getName() + " is eating " + member.getSelectedRestaurantId() + " (" + member.getSelectedRestaurantId() + ") ";
+        String toDisplay = member.getName() + " is eating here: " + member.getSelectedRestaurantName();
         // TODO recuperer url !!
         Glide.with(this.memberPhoto.getContext())
                 .load(member.getAvatarUrl())

@@ -76,9 +76,10 @@ public class MemberRepository {
     }
 
     // Update the member SelectedRestaurant:
-    public void updateMemberSelectedRestaurant(String userId, String selectedRestaurantId) {
+    public void updateMemberSelectedRestaurant(String userId, String selectedRestaurantId, String selectedRestaurantName) {
         Member memberToUpdate = getMemberById(userId);
         memberToUpdate.setSelectedRestaurantId(selectedRestaurantId);
+        memberToUpdate.setSelectedRestaurantName(selectedRestaurantName);
         myRef.child(memberToUpdate.getName()).setValue(memberToUpdate);
     }
 

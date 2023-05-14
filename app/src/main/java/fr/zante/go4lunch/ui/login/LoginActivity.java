@@ -137,7 +137,8 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseUser.getDisplayName(),
                 firebaseUser.getEmail(),
                 "",
-                "ChIJcxi2sojVwkcRGbFnQjPp7xU",
+                "",
+                "",
                 new ArrayList<>()
         );
         MemberRepository memberRepository = MemberRepository.getInstance();
