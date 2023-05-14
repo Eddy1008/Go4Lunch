@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private FirebaseAuth firebaseAuth;
-    private SharedViewModel sharedViewModel;
     private String userId;
 
     @Override
@@ -49,22 +48,20 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
         setSupportActionBar(binding.appBarMain.toolbar);
 
+        // Authentication:
         firebaseAuth = FirebaseAuth.getInstance();
         getUserInfo();
 
+        // Data For Member "Your Lunch" access:
         MemberRepository memberRepository = MemberRepository.getInstance();
         memberRepository.updateData();
 
-        this.sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-        sharedViewModel.setMyUserId(userId);
-
+        // UI Settings:
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         BottomNavigationView bottomNavigationView = binding.appBarMain.contentMain.bottomNavView;
-
         mAppBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.nav_mapview, R.id.nav_listview, R.id.nav_workmates)
                 .setOpenableLayout(drawer)
@@ -72,26 +69,28 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
+        // Set YOUR LUNCH menu item
         binding.navView.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
                 Member member = memberRepository.getMemberById(userId);
-                Log.d("TAG", "onCreate: userId = " + userId + " member.getMemberId() = " + member.getMemberId());
-
-                Intent intent = new Intent(getApplicationContext(), RestaurantActivity.class);
-                Bundle myBundle = new Bundle();
-                // TODO utiliser les données du member actif : member.getSelectedRestaurantId()
-                myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
-                myBundle.putString("USER_ID", userId);
-                intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
-                startActivity(intent);
+                if (member.getSelectedRestaurantId().equals("")) {
+                    Toast.makeText(MainActivity.this, "Please Make a choice and retry !", Toast.LENGTH_SHORT).show();
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), RestaurantActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
+                    myBundle.putString("USER_ID", userId);
+                    intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
+                    startActivity(intent);
+                }
                 return false;
             }
         });
 
+        // Set Settings menu item
         binding.navView.getMenu().getItem(1).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -100,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-        
+
+        // Set LOGOUT menu item
         binding.navView.getMenu().getItem(2).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
@@ -121,22 +121,24 @@ public class MainActivity extends AppCompatActivity {
         // Get user:
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null) {
-            // error : user not logged
+            // user not logged
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         } else {
-            String userEmail = firebaseUser.getEmail();
-            String userName = firebaseUser.getDisplayName();
             NavHeaderMainBinding navHeaderMainBinding = NavHeaderMainBinding.bind(binding.navView.getHeaderView(0));
-            navHeaderMainBinding.textViewMail.setText(userEmail);
-            navHeaderMainBinding.textViewName.setText(userName);
+            navHeaderMainBinding.textViewMail.setText(firebaseUser.getEmail());
+            navHeaderMainBinding.textViewName.setText(firebaseUser.getDisplayName());
             Glide.with(this)
                     .load(firebaseUser.getPhotoUrl())
                     .apply(new RequestOptions().override(200, 200))
                     .into(navHeaderMainBinding.imageViewAvatar);
 
+            // set userId value for sending in RestaurantActivity
             userId = firebaseUser.getUid();
-            Log.d("TAG", "getUserInfo: Uid = " + userId);
+
+            // Register the user ID in SharedViewModel (need in ListviewFragment)
+            SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+            sharedViewModel.setMyUserId(userId);
         }
     }
 
