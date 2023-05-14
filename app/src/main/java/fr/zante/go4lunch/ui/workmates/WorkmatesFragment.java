@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.FragmentWorkmatesBinding;
 import fr.zante.go4lunch.model.Member;
 
@@ -22,6 +23,7 @@ public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding binding;
     private RecyclerView recyclerView;
+    private MemberRepository repository;
     List<Member> members;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -29,6 +31,9 @@ public class WorkmatesFragment extends Fragment {
 
         binding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        repository = MemberRepository.getInstance();
+        repository.updateData();
 
         recyclerView = binding.workmatesRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
@@ -40,12 +45,7 @@ public class WorkmatesFragment extends Fragment {
     }
 
     private void initList() {
-        members = Arrays.asList(
-                new Member("0","eddy", "abcdef0@test.com", "blabla", "McDo", new ArrayList<>()),
-                new Member("1","melody", "abcdef1@test.com","blabla", "Flunch", new ArrayList<>()),
-                new Member("2","ethan", "abcdef2@test.com","blabla", "Quick", new ArrayList<>()),
-                new Member("3","cassandre", "abcdef3@test.com","blabla", "BK", new ArrayList<>())
-        );
+        members = repository.getMembersList();
         recyclerView.setAdapter(new WorkmatesRecyclerViewAdapter(members));
     }
 

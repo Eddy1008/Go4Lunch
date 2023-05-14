@@ -20,11 +20,11 @@ public class MemberRepository {
 
     private static MemberRepository repository;
     private List<Member> membersList = new ArrayList<>();
-    private LiveData<List<Member>> membersListLiveData;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("members");
 
+    // Singleton:
     public synchronized static MemberRepository getInstance() {
         if (repository == null) {
             repository = new MemberRepository();
@@ -32,20 +32,18 @@ public class MemberRepository {
         return repository;
     }
 
+    // Build the list with Data:
     public void updateData() {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                // get the list
+                // clean the list:
                 membersList.clear();
+                // build a new one:
                 for (DataSnapshot data: snapshot.getChildren()) {
                     Member member = data.getValue(Member.class);
-
                     if (member != null) {
                         membersList.add(member);
-                        Log.d("MemberRepository.update", "onDataChange: member Created : " + member.getName());
-                    } else {
-                        Log.d("MemberRepository.update", "onDataChange: member Null !!!");
                     }
                 }
             }
@@ -57,10 +55,12 @@ public class MemberRepository {
         });
     }
 
+    // Return the list:
     public List<Member> getMembersList() {
         return membersList;
     }
 
+    // get a Member by his Id:
     public Member getMemberById(String userId) {
         for (int i=0; i<membersList.size(); i++) {
             if (membersList.get(i).getMemberId().equals(userId)) {
@@ -70,10 +70,12 @@ public class MemberRepository {
         return null;
     }
 
+    // Add a Member in Database:
     public void addMember(Member member) {
         myRef.child(member.getName()).setValue(member);
     }
 
+    // Update the member SelectedRestaurant:
     public void updateMemberSelectedRestaurant(String userId, String selectedRestaurantId) {
         Member memberToUpdate = getMemberById(userId);
         memberToUpdate.setSelectedRestaurantId(selectedRestaurantId);
