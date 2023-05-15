@@ -33,7 +33,6 @@ public class WorkmatesFragment extends Fragment {
         View root = binding.getRoot();
 
         repository = MemberRepository.getInstance();
-        repository.updateData();
 
         recyclerView = binding.workmatesRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));

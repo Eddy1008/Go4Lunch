@@ -25,8 +25,6 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.util.List;
-
 import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityMainBinding;
 import fr.zante.go4lunch.databinding.NavHeaderMainBinding;
@@ -54,9 +52,11 @@ public class MainActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
         getUserInfo();
 
-        // Data For Member "Your Lunch" access:
+        // Data:
         MemberRepository memberRepository = MemberRepository.getInstance();
-        memberRepository.updateData();
+        if (userId != null) {
+            memberRepository.updateData(userId);
+        }
 
         // UI Settings:
         DrawerLayout drawer = binding.drawerLayout;
@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
         binding.navView.getMenu().getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(@NonNull MenuItem menuItem) {
-                Member member = memberRepository.getMemberById(userId);
+                Member member = memberRepository.getActiveMember(userId);
                 if (member.getSelectedRestaurantId().equals("")) {
-                    Toast.makeText(MainActivity.this, "Please Make a choice and retry !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, getString(R.string.make_a_choice), Toast.LENGTH_SHORT).show();
                 } else {
                     Intent intent = new Intent(getApplicationContext(), RestaurantActivity.class);
                     Bundle myBundle = new Bundle();
@@ -132,10 +132,8 @@ public class MainActivity extends AppCompatActivity {
                     .load(firebaseUser.getPhotoUrl())
                     .apply(new RequestOptions().override(200, 200))
                     .into(navHeaderMainBinding.imageViewAvatar);
-
             // set userId value for sending in RestaurantActivity
             userId = firebaseUser.getUid();
-
             // Register the user ID in SharedViewModel (need in ListviewFragment)
             SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
             sharedViewModel.setMyUserId(userId);

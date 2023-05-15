@@ -7,9 +7,11 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -19,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 
 import fr.zante.go4lunch.BuildConfig;
+import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.SharedViewModel;
 import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityRestaurantBinding;
@@ -32,6 +35,7 @@ public class RestaurantActivity extends AppCompatActivity {
     private RestaurantsViewModel restaurantsViewModel;
     private String userId;
     private MemberRepository repository;
+    private boolean isThisRestaurantLiked;
     private String restaurantId;
     private String restaurantName;
 
@@ -43,7 +47,6 @@ public class RestaurantActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         repository = MemberRepository.getInstance();
-        repository.updateData();
 
         getInfoFromIntent();
         setPreviousPageButton();
@@ -73,6 +76,7 @@ public class RestaurantActivity extends AppCompatActivity {
                     .load(myPhotoURL)
                     .into(binding.restaurantDetailPhoto);
 
+            // Set the phone button
             binding.restaurantDetailLinearLayoutPhone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -88,6 +92,19 @@ public class RestaurantActivity extends AppCompatActivity {
                 }
             });
 
+            // Set the like button
+            isThisRestaurantLiked = repository.isLikedRestaurant(restaurantJson.getPlace_id());
+            setRestaurantLikedButtonColor(isThisRestaurantLiked);
+            binding.restaurantDetailLinearLayoutLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    repository.updateMemberRestaurantLikedList(restaurantJson.getPlace_id());
+                    isThisRestaurantLiked = !isThisRestaurantLiked;
+                    setRestaurantLikedButtonColor(isThisRestaurantLiked);
+                }
+            });
+
+            // Set the Website button
             if (restaurantJson.getWebsite() != null) {
                 binding.restaurantDetailLinearLayoutWebsite.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -101,7 +118,7 @@ public class RestaurantActivity extends AppCompatActivity {
                 binding.restaurantDetailLinearLayoutWebsite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(RestaurantActivity.this, "No website for the moment !", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RestaurantActivity.this, getString(R.string.no_website_available), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -110,14 +127,21 @@ public class RestaurantActivity extends AppCompatActivity {
             restaurantName = restaurantJson.getName();
         });
     }
+
+    void setRestaurantLikedButtonColor(boolean isLiked) {
+        if (isLiked) {
+            binding.restaurantDetailImageviewLike.setImageResource(R.drawable.ic_baseline_is_like_star_24);
+        } else {
+            binding.restaurantDetailImageviewLike.setImageResource(R.drawable.ic_baseline_star_24);
+        }
+    }
     
     void setSelectedRestaurantButton() {
         binding.restaurantDetailFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(RestaurantActivity.this, "Will set this restaurant like your choice for today's lunch", Toast.LENGTH_SHORT).show();
-                repository.updateMemberSelectedRestaurant(userId, restaurantId, restaurantName);
-                Toast.makeText(RestaurantActivity.this, "Choix du restaurant mis à jour", Toast.LENGTH_SHORT).show();
+                repository.updateMemberSelectedRestaurant(restaurantId, restaurantName);
+                Toast.makeText(RestaurantActivity.this, getString(R.string.selected_restaurant_updated), Toast.LENGTH_SHORT).show();
             }
         });
     }

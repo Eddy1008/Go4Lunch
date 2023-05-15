@@ -30,4 +30,8 @@
     <string name="invalid_username">Not a valid username</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
+
+    <string name="selected_restaurant_updated">Choice updated !</string>
+    <string name="no_website_available">No website for the moment !</string>
+    <string name="make_a_choice">Please Make a choice and retry !</string>
 </resources>

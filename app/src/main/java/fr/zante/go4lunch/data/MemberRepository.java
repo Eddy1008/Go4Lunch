@@ -3,7 +3,6 @@ package fr.zante.go4lunch.data;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,6 +19,8 @@ public class MemberRepository {
 
     private static MemberRepository repository;
     private List<Member> membersList = new ArrayList<>();
+    private Member activeMember;
+    private List<String> myActiveMemberRestaurantLikedList = new ArrayList<>();
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
     DatabaseReference myRef = database.getReference("members");
@@ -32,18 +33,46 @@ public class MemberRepository {
         return repository;
     }
 
-    // Build the list with Data:
-    public void updateData() {
+    // Build Data:
+    public void updateData(String userId) {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // clean the list:
                 membersList.clear();
-                // build a new one:
+                // build membersList:
                 for (DataSnapshot data: snapshot.getChildren()) {
                     Member member = data.getValue(Member.class);
                     if (member != null) {
                         membersList.add(member);
+                    }
+                }
+                // get activeMember:
+                activeMember = getActiveMember(userId);
+                // build activeMember restaurant liked list:
+                getMyActiveMemberRestaurantLikedList();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("MemberRepository.update", "onCancelled: read database failed");
+            }
+        });
+    }
+
+    // Build the list of restaurant liked by activeMember:
+    public void getMyActiveMemberRestaurantLikedList() {
+        DatabaseReference myMemberRestaurantLikedListRef = myRef.child(activeMember.getName()).child("restaurantsLikedId");
+        myMemberRestaurantLikedListRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // clean the list:
+                myActiveMemberRestaurantLikedList.clear();
+                // build myActiveMemberRestaurantLikedList:
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    String id = data.getValue(String.class);
+                    if (id != null) {
+                        myActiveMemberRestaurantLikedList.add(id);
                     }
                 }
             }
@@ -60,6 +89,11 @@ public class MemberRepository {
         return membersList;
     }
 
+    // Return the list:
+    public List<String> getActiveMemberRestaurantLikedList() {
+        return myActiveMemberRestaurantLikedList;
+    }
+
     // get a Member by his Id:
     public Member getMemberById(String userId) {
         for (int i=0; i<membersList.size(); i++) {
@@ -70,17 +104,48 @@ public class MemberRepository {
         return null;
     }
 
+    public Member getActiveMember(String activeUserId) {
+        activeMember = getMemberById(activeUserId);
+        return activeMember;
+    }
+
     // Add a Member in Database:
     public void addMember(Member member) {
         myRef.child(member.getName()).setValue(member);
     }
 
     // Update the member SelectedRestaurant:
-    public void updateMemberSelectedRestaurant(String userId, String selectedRestaurantId, String selectedRestaurantName) {
-        Member memberToUpdate = getMemberById(userId);
-        memberToUpdate.setSelectedRestaurantId(selectedRestaurantId);
-        memberToUpdate.setSelectedRestaurantName(selectedRestaurantName);
-        myRef.child(memberToUpdate.getName()).setValue(memberToUpdate);
+    public void updateMemberSelectedRestaurant(String selectedRestaurantId, String selectedRestaurantName) {
+        activeMember.setSelectedRestaurantId(selectedRestaurantId);
+        activeMember.setSelectedRestaurantName(selectedRestaurantName);
+        myRef.child(activeMember.getName()).child("selectedRestaurantId").setValue(selectedRestaurantId);
+        myRef.child(activeMember.getName()).child("selectedRestaurantName").setValue(selectedRestaurantName);
     }
 
+    public void updateMemberRestaurantLikedList(String restaurantLikedId) {
+        boolean isLiked = false;
+        for (int i = 0; i< myActiveMemberRestaurantLikedList.size(); i++) {
+            if (myActiveMemberRestaurantLikedList.get(i).equals(restaurantLikedId)) {
+                isLiked = true;
+                break;
+            }
+        }
+
+        if (isLiked) {
+            myRef.child(activeMember.getName()).child("restaurantsLikedId").child(restaurantLikedId).removeValue();
+        } else {
+            myRef.child(activeMember.getName()).child("restaurantsLikedId").child(restaurantLikedId).setValue(restaurantLikedId);
+        }
+    }
+
+    public boolean isLikedRestaurant(String restaurantId) {
+        boolean isLikedRestaurant = false;
+        for (int i=0; i<myActiveMemberRestaurantLikedList.size(); i++) {
+            if (myActiveMemberRestaurantLikedList.get(i).equals(restaurantId)) {
+                isLikedRestaurant = true;
+                break;
+            }
+        }
+        return isLikedRestaurant;
+    }
 }

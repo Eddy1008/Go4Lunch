@@ -1,7 +1,5 @@
 package fr.zante.go4lunch.model;
 
-import java.util.List;
-
 public class Member {
 
     private String memberId;
@@ -10,16 +8,14 @@ public class Member {
     private String avatarUrl;
     private String selectedRestaurantId;
     private String selectedRestaurantName;
-    private List<String> restaurantsLikedId;
 
-    public Member(String memberId, String name, String mail, String avatarUrl, String selectedRestaurantId, String selectedRestaurantName, List<String> restaurantsLikedId) {
+    public Member(String memberId, String name, String mail, String avatarUrl, String selectedRestaurantId, String selectedRestaurantName) {
         this.memberId = memberId;
         this.name = name;
         this.mail = mail;
         this.avatarUrl = avatarUrl;
         this.selectedRestaurantId = selectedRestaurantId;
         this.selectedRestaurantName = selectedRestaurantName;
-        this.restaurantsLikedId = restaurantsLikedId;
     }
 
     public Member() {}
@@ -64,12 +60,5 @@ public class Member {
     }
     public void setSelectedRestaurantName(String selectedRestaurantName) {
         this.selectedRestaurantName = selectedRestaurantName;
-    }
-
-    public List<String> getRestaurantsLikedId() {
-        return restaurantsLikedId;
-    }
-    public void setRestaurantsLikedId(List<String> restaurantsLikedId) {
-        this.restaurantsLikedId = restaurantsLikedId;
     }
 }
