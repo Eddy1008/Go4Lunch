@@ -123,14 +123,7 @@ public class MemberRepository {
     }
 
     public void updateMemberRestaurantLikedList(String restaurantLikedId) {
-        boolean isLiked = false;
-        for (int i = 0; i< myActiveMemberRestaurantLikedList.size(); i++) {
-            if (myActiveMemberRestaurantLikedList.get(i).equals(restaurantLikedId)) {
-                isLiked = true;
-                break;
-            }
-        }
-
+        boolean isLiked = isLikedRestaurant(restaurantLikedId);
         if (isLiked) {
             myRef.child(activeMember.getName()).child("restaurantsLikedId").child(restaurantLikedId).removeValue();
         } else {

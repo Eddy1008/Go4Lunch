@@ -62,8 +62,10 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         int myDistanceToRestaurant = (int) getDistanceToRestaurant(restaurant, lat, lng);
         String myDistance = myDistanceToRestaurant + "m";
         distance.setText(myDistance);
-        // TODO recupérer le nombre de collegues inscrits pour ce resaurant
+
+        // TODO recupérer le nombre de collegues inscrits pour ce resaurant : onSnapshotListener
         subscription_number.setText("3");
+
         // TODO recupérer la note d'evaluation du restaurant
         rating.setText("XX");
         itemView.setOnClickListener(new View.OnClickListener() {
