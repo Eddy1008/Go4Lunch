@@ -21,8 +21,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -46,15 +44,11 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private FragmentMapviewBinding binding;
 
-
-
     // TODO WIP
     // RestaurantViewModel
     private RestaurantsViewModel restaurantsViewModel;
     // List of displayed restaurants:
     private List<RestaurantJson> restaurants = new ArrayList<>();
-
-
 
     //SharedViewModel
     private SharedViewModel sharedViewModel;
@@ -160,7 +154,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                 // TODO WIP
                                 configureRestaurantViewModel();
                                 getRestaurantsList();
-
                             }
                         } else {
                             Log.d("TAG", "Current location is null. Using defaults.");
@@ -226,6 +219,10 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 );
              */
+            Log.d("TAG", "getRestaurantsList: restaurant.size() = " + restaurants.size());
+
+            // restaurantRepository = RestaurantRepository.getInstance();
+            // restaurantRepository.setRestaurantListData(restaurants);
         });
     }
 }

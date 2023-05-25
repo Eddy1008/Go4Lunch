@@ -46,9 +46,11 @@ public class RestaurantActivity extends AppCompatActivity {
         binding = ActivityRestaurantBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        repository = MemberRepository.getInstance();
-
         getInfoFromIntent();
+
+        repository = MemberRepository.getInstance();
+        repository.getSelectedRestaurantMemberList(restaurantId);
+
         setPreviousPageButton();
         setSelectedRestaurantButton();
         getRestaurantDataFromBundle();
