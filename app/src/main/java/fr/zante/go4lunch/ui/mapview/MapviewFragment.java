@@ -1,11 +1,13 @@
 package fr.zante.go4lunch.ui.mapview;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -21,7 +23,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -34,17 +38,19 @@ import java.util.List;
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.SharedViewModel;
+import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.FragmentMapviewBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
+import fr.zante.go4lunch.model.SelectedRestaurant;
 import fr.zante.go4lunch.ui.RestaurantsViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
+import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 
 public class MapviewFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
     private FragmentMapviewBinding binding;
 
-    // TODO WIP
     // RestaurantViewModel
     private RestaurantsViewModel restaurantsViewModel;
     // List of displayed restaurants:
@@ -151,7 +157,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                 myLatLng = new LatLng( lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
                                 sharedViewModel.setMyLatLng(myLatLng);
 
-                                // TODO WIP
                                 configureRestaurantViewModel();
                                 getRestaurantsList();
                             }
@@ -192,37 +197,45 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
-
-    // TODO WIP
     private void configureRestaurantViewModel() {
         restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
         restaurantsViewModel.init(myLatLng.latitude, myLatLng.longitude);
     }
-    // TODO WIP
+
     private void getRestaurantsList() {
         restaurantsViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
-            // TODO condition Orange
+            MemberRepository repository = MemberRepository.getInstance();
+            List<SelectedRestaurant> myList = repository.getSelectedRestaurantsList();
             for (RestaurantJson restaurant : restaurants) {
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                        .title(restaurant.getName())
-                );
+                if(repository.isInMySelectedRestaurantList(restaurant.getPlace_id())) {
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                            .title(restaurant.getName())
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    )
+                            .setTag(restaurant.getPlace_id());
+                } else {
+                    map.addMarker(new MarkerOptions()
+                            .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                            .title(restaurant.getName())
+                    )
+                            .setTag(restaurant.getPlace_id());
+                }
             }
-            // TODO condition Green
-            /**
-            for (RestaurantJson restaurant : restaurants) {
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                        .title(restaurant.getName())
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                );
-             */
-            Log.d("TAG", "getRestaurantsList: restaurant.size() = " + restaurants.size());
-
-            // restaurantRepository = RestaurantRepository.getInstance();
-            // restaurantRepository.setRestaurantListData(restaurants);
+            map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(@NonNull Marker marker) {
+                    Toast.makeText(getActivity(), marker.getTitle() + " " + marker.getTag(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getContext(), RestaurantActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putString("RESTAURANT_PLACE_ID", (String) marker.getTag());
+                    myBundle.putString("USER_ID", sharedViewModel.getMyUserId());
+                    intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
+                    startActivity(intent);
+                    return false;
+                }
+            });
         });
     }
 }
