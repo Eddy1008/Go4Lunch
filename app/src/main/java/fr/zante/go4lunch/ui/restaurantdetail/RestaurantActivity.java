@@ -17,14 +17,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.SharedViewModel;
 import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityRestaurantBinding;
+import fr.zante.go4lunch.model.Member;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.ui.RestaurantsViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
@@ -38,6 +45,8 @@ public class RestaurantActivity extends AppCompatActivity {
     private boolean isThisRestaurantLiked;
     private String restaurantId;
     private String restaurantName;
+    private RecyclerView recyclerView;
+    private List<Member> membersJoiningList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,6 +63,7 @@ public class RestaurantActivity extends AppCompatActivity {
         setPreviousPageButton();
         setSelectedRestaurantButton();
         getRestaurantDataFromBundle();
+        setRecyclerView();
     }
 
     void getInfoFromIntent() {
@@ -155,5 +165,14 @@ public class RestaurantActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    void setRecyclerView() {
+        recyclerView = binding.restaurantDetailRecyclerview;
+        recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        // TODO changer la liste par la liste des membre ayant selectionné ce restaurant!
+        membersJoiningList = repository.getMembersList();
+        recyclerView.setAdapter(new RestaurantDetailRecyclerViewAdapter(membersJoiningList));
     }
 }
