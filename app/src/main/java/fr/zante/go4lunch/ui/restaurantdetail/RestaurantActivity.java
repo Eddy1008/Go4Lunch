@@ -43,6 +43,7 @@ public class RestaurantActivity extends AppCompatActivity {
     private String userId;
     private MemberRepository repository;
     private boolean isThisRestaurantLiked;
+    private boolean isThisRestaurantSelected;
     private String restaurantId;
     private String restaurantName;
     private RecyclerView recyclerView;
@@ -61,7 +62,6 @@ public class RestaurantActivity extends AppCompatActivity {
         repository.getSelectedRestaurantMemberList(restaurantId);
 
         setPreviousPageButton();
-        setSelectedRestaurantButton();
         getRestaurantDataFromBundle();
         setRecyclerView();
     }
@@ -87,6 +87,18 @@ public class RestaurantActivity extends AppCompatActivity {
             Glide.with(this.getApplicationContext())
                     .load(myPhotoURL)
                     .into(binding.restaurantDetailPhoto);
+
+            // Set the selected restaurant fab button
+            isThisRestaurantSelected = repository.isMySelectedRestaurant(restaurantId);
+            setSelectedRestaurantButtonColor(isThisRestaurantSelected);
+            binding.restaurantDetailFab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    repository.updateMemberSelectedRestaurant(restaurantId, restaurantName);
+                    isThisRestaurantSelected = !isThisRestaurantSelected;
+                    setSelectedRestaurantButtonColor(isThisRestaurantSelected);
+                }
+            });
 
             // Set the phone button
             binding.restaurantDetailLinearLayoutPhone.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +147,8 @@ public class RestaurantActivity extends AppCompatActivity {
                 });
             }
 
+
+
             // used if selected button clicked
             restaurantName = restaurantJson.getName();
         });
@@ -147,15 +161,13 @@ public class RestaurantActivity extends AppCompatActivity {
             binding.restaurantDetailImageviewLike.setImageResource(R.drawable.ic_baseline_star_24);
         }
     }
-    
-    void setSelectedRestaurantButton() {
-        binding.restaurantDetailFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                repository.updateMemberSelectedRestaurant(restaurantId, restaurantName);
-                Toast.makeText(RestaurantActivity.this, getString(R.string.selected_restaurant_updated), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+    void setSelectedRestaurantButtonColor(boolean isSelected) {
+        if (isSelected) {
+            binding.restaurantDetailFab.setImageResource(R.drawable.ic_baseline_check_circle_24);
+        } else {
+            binding.restaurantDetailFab.setImageResource(R.drawable.ic_baseline_check_circle_outline_24);
+        }
     }
 
     void setPreviousPageButton() {
@@ -171,7 +183,15 @@ public class RestaurantActivity extends AppCompatActivity {
         recyclerView = binding.restaurantDetailRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        // TODO changer la liste par la liste des membre ayant selectionné ce restaurant!
+        // TODO PB asynchrone
+        /**
+        List<String> membersJoiningIdList = repository.getMySelectedRestaurantMemberList();
+        for (int i=0; i<membersJoiningIdList.size(); i++) {
+            Member memberJoining = repository.getMemberById(membersJoiningIdList.get(i));
+            membersJoiningList.add(memberJoining);
+        }
+         */
+        // TODO temporaire: a retirer !!!
         membersJoiningList = repository.getMembersList();
         recyclerView.setAdapter(new RestaurantDetailRecyclerViewAdapter(membersJoiningList));
     }

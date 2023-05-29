@@ -110,6 +110,14 @@ public class MemberRepository {
         return isLikedRestaurant;
     }
 
+    public boolean isMySelectedRestaurant(String restaurantId) {
+        if(restaurantId.equals(activeMember.getSelectedRestaurantId())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     // get the list of restaurant liked by activeMember from database:
     public void getMyActiveMemberRestaurantLikedList() {
         DatabaseReference myMemberRestaurantLikedListRef = myRef.child(activeMember.getName()).child("restaurantsLikedId");
@@ -204,9 +212,9 @@ public class MemberRepository {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 mySelectedRestaurantMemberList.clear();
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    String id = data.getValue(String.class);
-                    if (id != null) {
-                        mySelectedRestaurantMemberList.add(id);
+                    String memberName = data.getValue(String.class);
+                    if (memberName != null) {
+                        mySelectedRestaurantMemberList.add(memberName);
                     }
                 }
             }
@@ -218,42 +226,61 @@ public class MemberRepository {
         });
     }
 
-    // verifie si activeMember a deja selectionné ce restaurant, sinon l'ajoute a la liste des membres qui l'ont selectionné
-    public void updateSelectedRestaurantMemberList(String restaurantId) {
-        boolean isAlreadySelected = false;
+    public List<String> getMySelectedRestaurantMemberList() { return mySelectedRestaurantMemberList; }
+
+    public void addMemberSelectedRestaurant(String selectedRestaurantId, String selectedRestaurantName) {
+        if (!isInMySelectedRestaurantList(selectedRestaurantId)) {
+            SelectedRestaurant mySelectedRestaurant = new SelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
+            selectedRestaurantsList.add(mySelectedRestaurant);
+            addSelectedRestaurant(mySelectedRestaurant);
+        }
+        mySelectedRestaurantMemberList.add(activeMember.getName());
+        addMemberToSelectedRestaurantMemberList(selectedRestaurantId);
+
+        activeMember.setSelectedRestaurantId(selectedRestaurantId);
+        activeMember.setSelectedRestaurantName(selectedRestaurantName);
+        myRef.child(activeMember.getName()).child("selectedRestaurantId").setValue(selectedRestaurantId);
+        myRef.child(activeMember.getName()).child("selectedRestaurantName").setValue(selectedRestaurantName);
+    }
+    public void deleteMemberSelectedRestaurant() {
         for (int i=0; i<mySelectedRestaurantMemberList.size(); i++) {
             if (mySelectedRestaurantMemberList.get(i).equals(activeMember.getName())) {
-                isAlreadySelected = true;
-                break;
+                mySelectedRestaurantMemberList.remove(i);
             }
         }
-        if (!isAlreadySelected) {
-            mySelectedRestaurantsRef.child(restaurantId).child("restaurantSelectedBy").child(activeMember.getMemberId()).setValue(activeMember.getName());
-            mySelectedRestaurantMemberList.add(activeMember.getMemberId());
-        } else {
-            Log.d("TAG", "updateSelectedRestaurantMemberList: choice cancelled");
+        mySelectedRestaurantsRef.child(activeMember.getSelectedRestaurantId()).child("restaurantSelectedBy").child(activeMember.getMemberId()).removeValue();
+        if (mySelectedRestaurantMemberList.size() == 0) {
+            for (int i=0; i<selectedRestaurantsList.size(); i++) {
+                if (selectedRestaurantsList.get(i).getRestaurantId().equals(activeMember.getSelectedRestaurantId())) {
+                    selectedRestaurantsList.remove(selectedRestaurantsList.get(i));
+                }
+            }
+            mySelectedRestaurantsRef.child(activeMember.getSelectedRestaurantId()).removeValue();
         }
     }
 
     // Update the member SelectedRestaurant:
     public void updateMemberSelectedRestaurant(String selectedRestaurantId, String selectedRestaurantName) {
-        if (!activeMember.getSelectedRestaurantId().equals("")) {
-            mySelectedRestaurantsRef.child(activeMember.getSelectedRestaurantId()).child("restaurantSelectedBy").child(activeMember.getMemberId()).removeValue();
-        }
-        activeMember.setSelectedRestaurantId(selectedRestaurantId);
-        activeMember.setSelectedRestaurantName(selectedRestaurantName);
-        myRef.child(activeMember.getName()).child("selectedRestaurantId").setValue(selectedRestaurantId);
-        myRef.child(activeMember.getName()).child("selectedRestaurantName").setValue(selectedRestaurantName);
-
-        if (isInMySelectedRestaurantList(selectedRestaurantId)) {
-            // restaurant is already in the list of selected restaurant:
-            updateSelectedRestaurantMemberList(selectedRestaurantId);
+        if (activeMember.getSelectedRestaurantId().equals("")) {
+            // Ajoute L'élément:
+            addMemberSelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
         } else {
-            // restaurant is not in the list of selected restaurant:
-            SelectedRestaurant mySelectedRestaurant = new SelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
-            addSelectedRestaurant(mySelectedRestaurant);
-            selectedRestaurantsList.add(mySelectedRestaurant);
-            updateSelectedRestaurantMemberList(selectedRestaurantId);
+            if (activeMember.getSelectedRestaurantId().equals(selectedRestaurantId)) {
+                // Supprime l'élément:
+                deleteMemberSelectedRestaurant();
+                activeMember.setSelectedRestaurantId("");
+                activeMember.setSelectedRestaurantName("");
+                myRef.child(activeMember.getName()).child("selectedRestaurantId").setValue("");
+                myRef.child(activeMember.getName()).child("selectedRestaurantName").setValue("");
+            } else {
+                // Supprime l'élément:
+                deleteMemberSelectedRestaurant();
+                //Ajoute L'élément:
+                addMemberSelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
+            }
         }
+    }
+    void addMemberToSelectedRestaurantMemberList(String restaurantId) {
+        mySelectedRestaurantsRef.child(restaurantId).child("restaurantSelectedBy").child(activeMember.getMemberId()).setValue(activeMember.getName());
     }
 }
