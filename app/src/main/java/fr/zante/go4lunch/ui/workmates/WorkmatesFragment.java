@@ -7,24 +7,25 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.FragmentWorkmatesBinding;
 import fr.zante.go4lunch.model.Member;
+import fr.zante.go4lunch.ui.MembersViewModel;
+import fr.zante.go4lunch.ui.ViewModelFactory;
 
 public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding binding;
     private RecyclerView recyclerView;
-    private MemberRepository repository;
-    List<Member> members;
+    private MembersViewModel membersViewModel;
+    private List<Member> members;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -32,7 +33,8 @@ public class WorkmatesFragment extends Fragment {
         binding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        repository = MemberRepository.getInstance();
+        membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        membersViewModel.initMembersList();
 
         recyclerView = binding.workmatesRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
@@ -44,8 +46,10 @@ public class WorkmatesFragment extends Fragment {
     }
 
     private void initList() {
-        members = repository.getMembersList();
-        recyclerView.setAdapter(new WorkmatesRecyclerViewAdapter(members));
+        membersViewModel.getMembers().observe(this.getViewLifecycleOwner(), members -> {
+            this.members = new ArrayList<>(members);
+            recyclerView.setAdapter(new WorkmatesRecyclerViewAdapter(members));
+        });
     }
 
     @Override

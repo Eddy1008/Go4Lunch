@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -42,7 +41,7 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
                 Intent intent = new Intent(view.getContext(), RestaurantActivity.class);
                 Bundle myBundle = new Bundle();
                 myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
-                myBundle.putString("USER_ID", member.getMemberId());
+                myBundle.putString("USER_NAME", member.getName());
                 intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                 view.getContext().startActivity(intent);
             }

@@ -7,12 +7,12 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class SharedViewModel extends ViewModel {
 
-    // User Id
+    // User Name
     // Set in MainActivity
     // For use in ListviewFragment for sending to RestaurantActivity
-    private MutableLiveData<String> myUserId = new MutableLiveData<>();
-    public void setMyUserId(String userId) { myUserId.setValue(userId); }
-    public String getMyUserId() { return myUserId.getValue(); }
+    private MutableLiveData<String> myUserName = new MutableLiveData<>();
+    public void setMyUserName(String userName) { myUserName.setValue(userName); }
+    public String getMyUserName() { return myUserName.getValue(); }
 
     // User Position
     // Set in MapviewFragment

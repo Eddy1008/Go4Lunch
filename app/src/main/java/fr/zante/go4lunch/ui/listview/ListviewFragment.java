@@ -29,7 +29,7 @@ public class ListviewFragment extends Fragment {
     private SharedViewModel sharedViewModel;
     private double myLat = 0;
     private double myLng = 0;
-    private String userId;
+    private String userName;
 
     private List<RestaurantJson> restaurants = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -51,8 +51,8 @@ public class ListviewFragment extends Fragment {
         this.sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
         myLat = sharedViewModel.getMyLat();
         myLng = sharedViewModel.getMyLng();
-        userId = sharedViewModel.getMyUserId();
-        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, this.userId);
+        userName = sharedViewModel.getMyUserName();
+        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, this.userName);
 
         configureViewModel();
         getRestaurants();

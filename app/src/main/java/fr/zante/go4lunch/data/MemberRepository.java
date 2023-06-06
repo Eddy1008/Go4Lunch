@@ -78,7 +78,7 @@ public class MemberRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("MemberRepository.update", "onCancelled: read database failed");
+
             }
         });
     }
@@ -137,7 +137,7 @@ public class MemberRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("MemberRepository.update", "onCancelled: read database failed");
+
             }
         });
     }
@@ -181,7 +181,7 @@ public class MemberRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("MemberRepository", "onCancelled: read database failed");
+
             }
         });
     }
@@ -221,7 +221,7 @@ public class MemberRepository {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("MemberRepository", "onCancelled: read database failed");
+
             }
         });
     }

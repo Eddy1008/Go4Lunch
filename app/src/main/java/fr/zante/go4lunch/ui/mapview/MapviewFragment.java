@@ -38,10 +38,10 @@ import java.util.List;
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.SharedViewModel;
-import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.FragmentMapviewBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.SelectedRestaurant;
+import fr.zante.go4lunch.ui.MembersViewModel;
 import fr.zante.go4lunch.ui.RestaurantsViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
@@ -55,6 +55,9 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private RestaurantsViewModel restaurantsViewModel;
     // List of displayed restaurants:
     private List<RestaurantJson> restaurants = new ArrayList<>();
+
+    private MembersViewModel membersViewModel;
+    private List<SelectedRestaurant> selectedRestaurantsList = new ArrayList<>();
 
     //SharedViewModel
     private SharedViewModel sharedViewModel;
@@ -102,6 +105,10 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
 
         // FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
+
+        // MembersViewModel
+        membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        membersViewModel.initSelectedRestaurantsList();
 
         binding = FragmentMapviewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -161,7 +168,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                 getRestaurantsList();
                             }
                         } else {
-                            Log.d("TAG", "Current location is null. Using defaults.");
                             Log.e("TAG", "Exception: %s", task.getException());
                             map.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
@@ -205,24 +211,27 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private void getRestaurantsList() {
         restaurantsViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
-            MemberRepository repository = MemberRepository.getInstance();
-            List<SelectedRestaurant> myList = repository.getSelectedRestaurantsList();
-            for (RestaurantJson restaurant : restaurants) {
-                if(repository.isInMySelectedRestaurantList(restaurant.getPlace_id())) {
-                    map.addMarker(new MarkerOptions()
-                            .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                            .title(restaurant.getName())
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                    )
-                            .setTag(restaurant.getPlace_id());
-                } else {
-                    map.addMarker(new MarkerOptions()
-                            .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                            .title(restaurant.getName())
-                    )
-                            .setTag(restaurant.getPlace_id());
+            // TODO WIP
+            membersViewModel.getSelectedRestaurants().observe(this, selectedRestaurants -> {
+                selectedRestaurantsList = new ArrayList<>(selectedRestaurants);
+                for (RestaurantJson restaurant : restaurants) {
+                    if (checkIsIsInMyList(restaurant.getPlace_id(), selectedRestaurantsList)) {
+                        map.addMarker(new MarkerOptions()
+                                        .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                                        .title(restaurant.getName())
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                )
+                                .setTag(restaurant.getPlace_id());
+                    } else {
+                        map.addMarker(new MarkerOptions()
+                                        .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                                        .title(restaurant.getName())
+                                )
+                                .setTag(restaurant.getPlace_id());
+                    }
                 }
-            }
+            });
+
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull Marker marker) {
@@ -230,12 +239,21 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                     Intent intent = new Intent(getContext(), RestaurantActivity.class);
                     Bundle myBundle = new Bundle();
                     myBundle.putString("RESTAURANT_PLACE_ID", (String) marker.getTag());
-                    myBundle.putString("USER_ID", sharedViewModel.getMyUserId());
+                    myBundle.putString("USER_NAME", sharedViewModel.getMyUserName());
                     intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                     startActivity(intent);
                     return false;
                 }
             });
         });
+    }
+
+    private boolean checkIsIsInMyList(String restaurantId, List<SelectedRestaurant> mySelectedRestaurantList) {
+        for (SelectedRestaurant selectedRestaurant : mySelectedRestaurantList) {
+            if (selectedRestaurant.getRestaurantId().equals(restaurantId)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

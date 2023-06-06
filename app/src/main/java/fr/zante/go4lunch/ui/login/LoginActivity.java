@@ -3,6 +3,7 @@ package fr.zante.go4lunch.ui.login;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,9 +27,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import fr.zante.go4lunch.MainActivity;
 import fr.zante.go4lunch.R;
-import fr.zante.go4lunch.data.MemberRepository;
 import fr.zante.go4lunch.databinding.ActivityLoginBinding;
 import fr.zante.go4lunch.model.Member;
+import fr.zante.go4lunch.ui.MembersViewModel;
+import fr.zante.go4lunch.ui.ViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -60,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         binding.signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d(TAG, "onClick: begin google sign in");
                 Intent intent = googleSigninClient.getSignInIntent();
                 startActivityForResult(intent, RC_SIGN_IN);
             }
@@ -71,19 +72,17 @@ public class LoginActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
-            Log.d(TAG, "onActivityResult: Google sign in intent result");
             Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 GoogleSignInAccount account = accountTask.getResult(ApiException.class);
                 firebaseAuthWithGoogleAccount(account);
             } catch (Exception e) {
-                Log.d(TAG, "onActivityResult: " + e.getMessage());
+                Log.e(TAG, "onActivityResult: " + e.getMessage());
             }
         }
     }
 
     private void firebaseAuthWithGoogleAccount(GoogleSignInAccount account) {
-        Log.d(TAG, "firebaseAuthWithGoogleAccount: begin firebase auth with google account");
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
@@ -109,8 +108,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        // login failed
-                        Log.d(TAG, "onFailure: login failed " + e.getMessage());
+                        Log.e(TAG, "onFailure: login failed " + e.getMessage());
                     }
                 });
     }
@@ -124,7 +122,8 @@ public class LoginActivity extends AppCompatActivity {
                 "",
                 ""
         );
-        MemberRepository memberRepository = MemberRepository.getInstance();
-        memberRepository.addMember(member);
+
+        MembersViewModel membersViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        membersViewModel.addMember(member);
     }
 }
