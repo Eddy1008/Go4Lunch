@@ -84,7 +84,7 @@ public class RestaurantActivity extends AppCompatActivity {
 
         setPreviousPageButton();
         getRestaurantDataFromBundle();
-        //setRecyclerView();
+        setRecyclerView();
     }
 
     void getInfoFromIntent() {
@@ -264,18 +264,9 @@ public class RestaurantActivity extends AppCompatActivity {
         recyclerView = binding.restaurantDetailRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        // TODO PB asynchrone
-        /**
-        List<String> membersJoiningIdList = repository.getMySelectedRestaurantMemberList();
-        for (int i=0; i<membersJoiningIdList.size(); i++) {
-            Member memberJoining = repository.getMemberById(membersJoiningIdList.get(i));
-            membersJoiningList.add(memberJoining);
-        }
-         */
-        // TODO temporaire: a retirer !!!
-        /**
-        membersJoiningList = repository.getMembersList();
-        recyclerView.setAdapter(new RestaurantDetailRecyclerViewAdapter(membersJoiningList));
-         */
+        membersViewModel.getSelectedRestaurantMembers().observe(this, members -> {
+            membersJoiningList = new ArrayList<>(members);
+            recyclerView.setAdapter(new RestaurantDetailRecyclerViewAdapter(membersJoiningList));
+        });
     }
 }
