@@ -1,7 +1,5 @@
 package fr.zante.go4lunch.ui.restaurantdetail;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +26,6 @@ public class RestaurantDetailItemViewHolder extends RecyclerView.ViewHolder{
 
     public void bind(Member member) {
         String stringToDisplay = member.getName() + " is joining!";
-        // TODO recuperer url pour affichage du portrait!
         Glide.with(this.memberPhoto.getContext())
                 .load(member.getAvatarUrl())
                 .apply(RequestOptions.circleCropTransform())

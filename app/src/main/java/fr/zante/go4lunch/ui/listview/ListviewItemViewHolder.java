@@ -25,6 +25,11 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
     private TextView distance;
     private TextView subscription_number;
     private TextView rating;
+
+    private ImageView firstStar;
+    private ImageView secondStar;
+    private ImageView thirdStar;
+
     private ImageView restaurant_photo;
 
     public ListviewItemViewHolder(@NonNull View itemView) {
@@ -35,7 +40,10 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         opening_info = itemView.findViewById(R.id.item_restaurant_textview_opening_info);
         distance = itemView.findViewById(R.id.item_restaurant_textview_distance);
         subscription_number = itemView.findViewById(R.id.item_restaurant_textview_subscription_number);
-        rating = itemView.findViewById(R.id.item_restaurant_textview_rating);
+        //rating = itemView.findViewById(R.id.item_restaurant_textview_rating);
+        firstStar = itemView.findViewById(R.id.item_restaurant_imageview_first_star);
+        secondStar = itemView.findViewById(R.id.item_restaurant_imageview_second_star);
+        thirdStar = itemView.findViewById(R.id.item_restaurant_imageview_third_star);
     }
 
     public void bind(RestaurantJson restaurant, double lat, double lng, String userName) {
@@ -66,8 +74,25 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         // TODO recupérer le nombre de collegues inscrits pour ce resaurant : onSnapshotListener
         subscription_number.setText("3");
 
-        // TODO recupérer la note d'evaluation du restaurant
-        rating.setText("XX");
+        float myIntRating = restaurant.getRating() * 3 / 5;
+        if (myIntRating > 2.6) {
+            firstStar.setVisibility(View.VISIBLE);
+            secondStar.setVisibility(View.VISIBLE);
+            thirdStar.setVisibility(View.VISIBLE);
+        } else if (myIntRating > 1.8) {
+            firstStar.setVisibility(View.VISIBLE);
+            secondStar.setVisibility(View.VISIBLE);
+            thirdStar.setVisibility(View.INVISIBLE);
+        } else if (myIntRating > 1) {
+            firstStar.setVisibility(View.VISIBLE);
+            secondStar.setVisibility(View.INVISIBLE);
+            thirdStar.setVisibility(View.INVISIBLE);
+        } else {
+            firstStar.setVisibility(View.INVISIBLE);
+            secondStar.setVisibility(View.INVISIBLE);
+            thirdStar.setVisibility(View.INVISIBLE);
+        }
+
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

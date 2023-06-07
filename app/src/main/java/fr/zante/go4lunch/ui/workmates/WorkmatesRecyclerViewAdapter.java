@@ -39,4 +39,9 @@ public class WorkmatesRecyclerViewAdapter extends RecyclerView.Adapter<Workmates
     public int getItemCount() {
         return members.size();
     }
+
+    public void updateMembers(List<Member> members) {
+        this.members = members;
+        this.notifyDataSetChanged();
+    }
 }

@@ -13,6 +13,7 @@ public class RestaurantJson implements Serializable {
     private String formatted_phone_number;
     private String website;
     private String vicinity;
+    private float rating;
     private GeometryJson geometry;
     private OpeningJson opening_hours;
     private List<PhotoJson> photos;
@@ -47,6 +48,9 @@ public class RestaurantJson implements Serializable {
     public void setVicinity(String vicinity) {
         this.vicinity = vicinity;
     }
+
+    public float getRating() { return rating; }
+    public void setRating(float rating) { this.rating = rating; }
 
     public GeometryJson getGeometry() {
         return geometry;

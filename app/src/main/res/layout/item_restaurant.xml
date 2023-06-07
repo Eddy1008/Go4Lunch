@@ -58,20 +58,36 @@
         android:text="(2)"
         android:textSize="12sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/item_restaurant_textview_rating"
+        app:layout_constraintBottom_toTopOf="@+id/item_restaurant_imageview_first_star"
         app:layout_constraintEnd_toStartOf="@+id/item_restaurant_photo"
         app:layout_constraintTop_toBottomOf="@id/item_restaurant_textview_distance" />
 
-    <TextView
-        android:id="@+id/item_restaurant_textview_rating"
+    <ImageView
+        android:id="@+id/item_restaurant_imageview_first_star"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="X"
-        android:textSize="12sp"
-        android:textStyle=""
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/item_restaurant_photo"
-        app:layout_constraintEnd_toStartOf="@+id/item_restaurant_photo" />
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_photo"
+        android:src="@drawable/ic_baseline_star_rate_24"/>
+
+    <ImageView
+        android:id="@+id/item_restaurant_imageview_second_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/item_restaurant_imageview_first_star"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_imageview_first_star"
+        android:src="@drawable/ic_baseline_star_rate_24"/>
+
+    <ImageView
+        android:id="@+id/item_restaurant_imageview_third_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/item_restaurant_imageview_second_star"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_imageview_second_star"
+        android:src="@drawable/ic_baseline_star_rate_24"/>
 
     <ImageView
         android:id="@+id/item_restaurant_photo"

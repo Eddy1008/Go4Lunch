@@ -23,9 +23,11 @@ import fr.zante.go4lunch.ui.ViewModelFactory;
 public class WorkmatesFragment extends Fragment {
 
     private FragmentWorkmatesBinding binding;
+
+    private List<Member> members = new ArrayList<>();
     private RecyclerView recyclerView;
+    private WorkmatesRecyclerViewAdapter adapter;
     private MembersViewModel membersViewModel;
-    private List<Member> members;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -33,23 +35,33 @@ public class WorkmatesFragment extends Fragment {
         binding = FragmentWorkmatesBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
-        membersViewModel.initMembersList();
-
         recyclerView = binding.workmatesRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
+        adapter = new WorkmatesRecyclerViewAdapter(this.members);
 
+        configureViewModel();
+        getMembers();
         initList();
 
         return root;
     }
 
-    private void initList() {
+    private void configureViewModel() {
+        membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        membersViewModel.initMembersList();
+    }
+
+    private void getMembers() {
+        // TODO Perte de la liste si acces au restaurant activity !!!
         membersViewModel.getMembers().observe(this.getViewLifecycleOwner(), members -> {
             this.members = new ArrayList<>(members);
-            recyclerView.setAdapter(new WorkmatesRecyclerViewAdapter(members));
+            adapter.updateMembers(this.members);
         });
+    }
+
+    public void initList() {
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
