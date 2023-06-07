@@ -62,7 +62,7 @@ public class ListviewFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        this.restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
+        this.restaurantsViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
         this.restaurantsViewModel.init(myLat, myLng);
     }
 

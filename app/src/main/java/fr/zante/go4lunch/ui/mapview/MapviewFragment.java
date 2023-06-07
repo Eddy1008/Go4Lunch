@@ -204,7 +204,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configureRestaurantViewModel() {
-        restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
+        restaurantsViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
         restaurantsViewModel.init(myLatLng.latitude, myLatLng.longitude);
     }
 

@@ -102,12 +102,14 @@ public class RestaurantActivity extends AppCompatActivity {
 
             binding.restaurantDetailName.setText(restaurantJson.getName());
             binding.restaurantDetailAddress.setText(restaurantJson.getVicinity());
-            String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
-            String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
-            String myPhotoURL = myBasePhotoURL + restaurantJson.getPhotos().get(0).getPhoto_reference() + apiKey;
-            Glide.with(this.getApplicationContext())
-                    .load(myPhotoURL)
-                    .into(binding.restaurantDetailPhoto);
+            if (restaurantJson.getPhotos() != null) {
+                String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
+                String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
+                String myPhotoURL = myBasePhotoURL + restaurantJson.getPhotos().get(0).getPhoto_reference() + apiKey;
+                Glide.with(this.getApplicationContext())
+                        .load(myPhotoURL)
+                        .into(binding.restaurantDetailPhoto);
+            }
 
             // Set the selected restaurant fab button
             setSelectedRestaurantButtonColor();
