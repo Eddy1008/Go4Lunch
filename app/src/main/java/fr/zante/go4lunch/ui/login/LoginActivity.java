@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseUser.getUid(),
                 firebaseUser.getDisplayName(),
                 firebaseUser.getEmail(),
-                "",
+                String.valueOf(firebaseUser.getPhotoUrl()),
                 "",
                 ""
         );
