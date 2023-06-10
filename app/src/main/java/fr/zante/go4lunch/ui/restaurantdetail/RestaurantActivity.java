@@ -64,7 +64,6 @@ public class RestaurantActivity extends AppCompatActivity {
             this.activeMember = member;
             if (activeMember != null) {
                 membersViewModel.initMemberLikedRestaurantsList(activeMember);
-                Log.d("TAG", "Restaurant Activity : onCreate: \n activeMember Id = " + activeMember.getMemberId() + " \n activeMember Name = " + activeMember.getName());
             }
         });
 
@@ -92,7 +91,6 @@ public class RestaurantActivity extends AppCompatActivity {
         Bundle myBundle = intent.getBundleExtra("BUNDLE_RESTAURANT_SELECTED");
         restaurantId = (String) myBundle.get("RESTAURANT_PLACE_ID");
         userName = (String) myBundle.get("USER_NAME");
-        Log.d("TAG", "getInfoFromIntent: userName = " + userName);
     }
 
     void getRestaurantDataFromBundle() {
@@ -229,25 +227,23 @@ public class RestaurantActivity extends AppCompatActivity {
                 membersViewModel.deleteMemberToSelectedRestaurantMemberList(activeMember, activeMember.getSelectedRestaurantId());
                 membersViewModel.getActiveMemberSelectedRestaurantMembersJoiningList(activeMember.getSelectedRestaurantId()).observe(this, members -> {
                     List<Member> myJoiningList = new ArrayList<>(members);
-                    if (myJoiningList != null) {
-                        if (myJoiningList.size() == 0) {
-                            membersViewModel.deleteSelectedRestaurant(activeMember.getSelectedRestaurantId());
-                        }
-                        activeMember.setSelectedRestaurantId(selectedRestaurantId);
-                        activeMember.setSelectedRestaurantName(selectedRestaurantName);
-                        membersViewModel.updateMember(activeMember);
-                        boolean isInSelectedList = false;
-                        for (int i=0; i<selectedRestaurantList.size(); i++) {
-                            if (selectedRestaurantList.get(i).getRestaurantId().equals(selectedRestaurantId)) {
-                                isInSelectedList = true;
-                            }
-                        }
-                        if (!isInSelectedList) {
-                            SelectedRestaurant mySelectedRestaurant =  new SelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
-                            membersViewModel.addSelectedRestaurant(mySelectedRestaurant);
-                        }
-                        membersViewModel.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
+                    if (myJoiningList.size() == 0) {
+                        membersViewModel.deleteSelectedRestaurant(activeMember.getSelectedRestaurantId());
                     }
+                    activeMember.setSelectedRestaurantId(selectedRestaurantId);
+                    activeMember.setSelectedRestaurantName(selectedRestaurantName);
+                    membersViewModel.updateMember(activeMember);
+                    boolean isInSelectedList = false;
+                    for (int i=0; i<selectedRestaurantList.size(); i++) {
+                        if (selectedRestaurantList.get(i).getRestaurantId().equals(selectedRestaurantId)) {
+                            isInSelectedList = true;
+                        }
+                    }
+                    if (!isInSelectedList) {
+                        SelectedRestaurant mySelectedRestaurant =  new SelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
+                        membersViewModel.addSelectedRestaurant(mySelectedRestaurant);
+                    }
+                    membersViewModel.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
                 });
             }
         }

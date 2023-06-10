@@ -63,6 +63,8 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private SharedViewModel sharedViewModel;
     private LatLng myLatLng;
 
+    private List<Marker> markers = new ArrayList<>();
+
     private PlacesClient placesClient;
     private FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -211,23 +213,29 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private void getRestaurantsList() {
         restaurantsViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
-            // TODO WIP
             membersViewModel.getSelectedRestaurants().observe(this, selectedRestaurants -> {
                 selectedRestaurantsList = new ArrayList<>(selectedRestaurants);
+                for (Marker marker : markers) {
+                    marker.remove();
+                }
+                markers.clear();
+                Log.d("TAG", "getRestaurantsList: selectedRestaurantsList.size = " + selectedRestaurantsList.size());
                 for (RestaurantJson restaurant : restaurants) {
                     if (checkIsIsInMyList(restaurant.getPlace_id(), selectedRestaurantsList)) {
-                        map.addMarker(new MarkerOptions()
+                        Marker marker = map.addMarker(new MarkerOptions()
                                         .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
                                         .title(restaurant.getName())
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                )
-                                .setTag(restaurant.getPlace_id());
+                                );
+                        marker.setTag(restaurant.getPlace_id());
+                        markers.add(marker);
                     } else {
-                        map.addMarker(new MarkerOptions()
+                        Marker marker = map.addMarker(new MarkerOptions()
                                         .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
                                         .title(restaurant.getName())
-                                )
-                                .setTag(restaurant.getPlace_id());
+                                );
+                        marker.setTag(restaurant.getPlace_id());
+                        markers.add(marker);
                     }
                 }
             });
