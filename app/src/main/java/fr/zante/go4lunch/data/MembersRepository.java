@@ -6,7 +6,6 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,7 +27,6 @@ public class MembersRepository {
     DatabaseReference myRef = database.getReference("members");
     DatabaseReference mySelectedRestaurantsRef = database.getReference("selectedRestaurants");
 
-    private Member myNewActiveMember;
     private List<Member> myMembersList = new ArrayList<>();
     private List<String> myActiveMemberLikeList = new ArrayList<>();
     private List<SelectedRestaurant> mySelectedRestaurantsList = new ArrayList<>();

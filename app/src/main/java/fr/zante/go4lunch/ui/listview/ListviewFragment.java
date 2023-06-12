@@ -15,18 +15,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.zante.go4lunch.SharedViewModel;
 import fr.zante.go4lunch.databinding.FragmentListviewBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
-import fr.zante.go4lunch.ui.RestaurantsViewModel;
+import fr.zante.go4lunch.ui.MembersViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 
 public class ListviewFragment extends Fragment {
 
     private FragmentListviewBinding binding;
 
-    //SharedViewModel
-    private SharedViewModel sharedViewModel;
     private double myLat = 0;
     private double myLng = 0;
     private String userName;
@@ -34,7 +31,7 @@ public class ListviewFragment extends Fragment {
     private List<RestaurantJson> restaurants = new ArrayList<>();
     private RecyclerView recyclerView;
     private ListviewRecyclerViewAdapter adapter;
-    private RestaurantsViewModel restaurantsViewModel;
+    private MembersViewModel membersViewModel;
 
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -47,11 +44,10 @@ public class ListviewFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
 
-        // SharedViewModel
-        this.sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
-        myLat = sharedViewModel.getMyLat();
-        myLng = sharedViewModel.getMyLng();
-        userName = sharedViewModel.getMyUserName();
+        this.membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        myLat = membersViewModel.getMyLat();
+        myLng = membersViewModel.getMyLng();
+        userName = membersViewModel.getMyUserName();
         adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, this.userName);
 
         configureViewModel();
@@ -62,12 +58,11 @@ public class ListviewFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        this.restaurantsViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
-        this.restaurantsViewModel.init(myLat, myLng);
+        this.membersViewModel.init(myLat, myLng);
     }
 
     private void getRestaurants() {
-        restaurantsViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
+        membersViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
             adapter.updateRestaurants(restaurants);
         });

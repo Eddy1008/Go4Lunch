@@ -1,40 +1,40 @@
 package fr.zante.go4lunch.ui;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.List;
 
+import fr.zante.go4lunch.data.GooglePlacesRepository;
 import fr.zante.go4lunch.data.MembersRepository;
 import fr.zante.go4lunch.model.Member;
+import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.SelectedRestaurant;
 
 public class MembersViewModel extends ViewModel {
 
     // Repository
     private final MembersRepository repository;
+    private final GooglePlacesRepository googlePlaceRepository;
 
     // DATA
     private LiveData<List<Member>> membersData;
+    private LiveData<List<RestaurantJson>> restaurantsData;
     private LiveData<Member> activeMember;
-    private LiveData<List<String>> memberLikedRestaurantData;
     private LiveData<List<SelectedRestaurant>> selectedRestaurantsData;
-    private LiveData<List<Member>> selectedRestaurantMembersData;
-
 
     // Constructor
-    public MembersViewModel(MembersRepository repository) {
+    public MembersViewModel(MembersRepository repository, GooglePlacesRepository googlePlaceRepository) {
         this.repository = repository;
+        this.googlePlaceRepository = googlePlaceRepository;
     }
-
 
     // *******************************
     // *********** MEMBERS ***********
     // *******************************
-
-    public void addMember(Member member) {
-        repository.addMember(member);
-    }
 
     public void initMembersList() {
         if (this.membersData != null) {
@@ -52,31 +52,26 @@ public class MembersViewModel extends ViewModel {
     }
     public LiveData<Member> getActiveMember() { return this.activeMember; }
 
-    public void updateMember(Member member) { repository.updateMember(member); }
 
+    // ***********************************
+    // *********** RESTAURANTS ***********
+    // ***********************************
 
-    // **************************************
-    // ****** MEMBER LIKED RESTAURANTS ******
-    // **************************************
-
-    public void addLikedRestaurant(Member activeMember, String restaurantId) { repository.addLikedRestaurant(activeMember, restaurantId); }
-
-    public void initMemberLikedRestaurantsList(Member activeMember) {
-        if (this.memberLikedRestaurantData != null) {
+    public void init(double lat, double lng) {
+        if (this.restaurantsData != null) {
             return;
         }
-        memberLikedRestaurantData = repository.getActiveMemberLikedRestaurantLiveDataList(activeMember);
+        restaurantsData = googlePlaceRepository.getRestaurantLiveData(lat, lng);
     }
-    public LiveData<List<String>> getMemberLikedRestaurants() { return this.memberLikedRestaurantData; }
 
-    public void deleteLikedRestaurant(Member activeMember, String restaurantId) { repository.deleteLikedRestaurant(activeMember, restaurantId);}
+    public LiveData<List<RestaurantJson>> getRestaurants() {
+        return this.restaurantsData;
+    }
 
 
     // ************************************
     // ******* SELECTED RESTAURANTS *******
     // ************************************
-
-    public void addSelectedRestaurant(SelectedRestaurant selectedRestaurant) { repository.addSelectedRestaurant(selectedRestaurant);}
 
     public void initSelectedRestaurantsList() {
         if (this.selectedRestaurantsData != null) {
@@ -87,33 +82,29 @@ public class MembersViewModel extends ViewModel {
 
     public LiveData<List<SelectedRestaurant>> getSelectedRestaurants() { return this.selectedRestaurantsData; }
 
-    public void deleteSelectedRestaurant(String selectedRestaurantId) { repository.deleteSelectedRestaurant(selectedRestaurantId);}
+    // **************************
+    // ********* SHARED *********
+    // **************************
 
+    // User Name
+    // Set in MainActivity
+    // For use in ListviewFragment for sending to RestaurantActivity
+    private MutableLiveData<String> myUserName = new MutableLiveData<>();
+    public void setMyUserName(String userName) { myUserName.setValue(userName); }
+    public String getMyUserName() { return myUserName.getValue(); }
 
-    // ****************************************
-    // ***** SELECTED RESTAURANTS MEMBERS *****
-    // ****************************************
-
-    public void addMemberToSelectedRestaurantMemberList(Member activeMember, String selectedRestaurantId) {
-        repository.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
+    // User Position
+    // Set in MapviewFragment
+    // For use in ListviewFragment
+    private MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
+    public void setMyLatLng(LatLng myNewLatLng) {
+        myLatLng.setValue(myNewLatLng);
     }
-
-    public void  initSelectedRestaurantMembersList(String selectedRestaurantId) {
-        if (this.selectedRestaurantMembersData != null) {
-            return;
-        }
-        selectedRestaurantMembersData = repository.getSelectedRestaurantMemberLiveDataList(selectedRestaurantId);
+    public double getMyLat() {
+        return myLatLng.getValue().latitude;
     }
-
-    public LiveData<List<Member>> getSelectedRestaurantMembers() { return this.selectedRestaurantMembersData; }
-
-    public LiveData<List<Member>> getActiveMemberSelectedRestaurantMembersJoiningList(String activeMemberSelectedRestaurantId) {
-        LiveData<List<Member>> myList = repository.getSelectedRestaurantMemberLiveDataList(activeMemberSelectedRestaurantId);
-        return myList;
-    }
-
-    public void deleteMemberToSelectedRestaurantMemberList(Member activeMember, String selectedRestaurantId) {
-        repository.deleteMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
+    public double getMyLng() {
+        return myLatLng.getValue().longitude;
     }
 
 }

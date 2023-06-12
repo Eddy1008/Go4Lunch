@@ -51,7 +51,7 @@ public class GooglePlacesRepository {
     public LiveData<RestaurantJson> getRestaurantLiveDataById(String myPlaceId) {
         MutableLiveData<RestaurantJson> restaurantJsonByIdMutableLiveData = new MutableLiveData<>();
 
-        String myFields = "name,place_id,vicinity,geometry,opening_hours,formatted_phone_number,photos,website";
+        String myFields = "name,place_id,vicinity,geometry,rating,opening_hours,formatted_phone_number,photos,website";
         String apiKey = BuildConfig.MAPS_API_KEY;
 
         googlePlacesAPi.getPlaceInfoById(myPlaceId, myFields, apiKey).enqueue(new Callback<RestaurantResultById>() {

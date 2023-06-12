@@ -37,12 +37,10 @@ import java.util.List;
 
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
-import fr.zante.go4lunch.SharedViewModel;
 import fr.zante.go4lunch.databinding.FragmentMapviewBinding;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.SelectedRestaurant;
 import fr.zante.go4lunch.ui.MembersViewModel;
-import fr.zante.go4lunch.ui.RestaurantsViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 
@@ -51,16 +49,12 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private FragmentMapviewBinding binding;
 
-    // RestaurantViewModel
-    private RestaurantsViewModel restaurantsViewModel;
     // List of displayed restaurants:
     private List<RestaurantJson> restaurants = new ArrayList<>();
 
     private MembersViewModel membersViewModel;
     private List<SelectedRestaurant> selectedRestaurantsList = new ArrayList<>();
 
-    //SharedViewModel
-    private SharedViewModel sharedViewModel;
     private LatLng myLatLng;
 
     private List<Marker> markers = new ArrayList<>();
@@ -101,9 +95,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
         // PlacesClient
         Places.initialize(getActivity().getApplicationContext(), BuildConfig.MAPS_API_KEY);
         placesClient = Places.createClient(this.getActivity().getApplicationContext());
-
-        //SharedViewModel
-        this.sharedViewModel = new ViewModelProvider(requireActivity()).get(SharedViewModel.class);
 
         // FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
@@ -164,7 +155,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                         new LatLng(lastKnownLocation.getLatitude(),
                                                 lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
                                 myLatLng = new LatLng( lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-                                sharedViewModel.setMyLatLng(myLatLng);
+                                membersViewModel.setMyLatLng(myLatLng);
 
                                 configureRestaurantViewModel();
                                 getRestaurantsList();
@@ -206,12 +197,12 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configureRestaurantViewModel() {
-        restaurantsViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
-        restaurantsViewModel.init(myLatLng.latitude, myLatLng.longitude);
+        //restaurantsViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
+        membersViewModel.init(myLatLng.latitude, myLatLng.longitude);
     }
 
     private void getRestaurantsList() {
-        restaurantsViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
+        membersViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
             membersViewModel.getSelectedRestaurants().observe(this, selectedRestaurants -> {
                 selectedRestaurantsList = new ArrayList<>(selectedRestaurants);
@@ -247,7 +238,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                     Intent intent = new Intent(getContext(), RestaurantActivity.class);
                     Bundle myBundle = new Bundle();
                     myBundle.putString("RESTAURANT_PLACE_ID", (String) marker.getTag());
-                    myBundle.putString("USER_NAME", sharedViewModel.getMyUserName());
+                    myBundle.putString("USER_NAME", membersViewModel.getMyUserName());
                     intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                     startActivity(intent);
                     return false;

@@ -35,6 +35,7 @@ import fr.zante.go4lunch.ui.settings.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+    private MembersViewModel membersViewModel;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
     private FirebaseAuth firebaseAuth;
@@ -49,12 +50,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         setSupportActionBar(binding.appBarMain.toolbar);
 
+        // Data:
+        membersViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MembersViewModel.class);
+
         // Authentication:
         firebaseAuth = FirebaseAuth.getInstance();
         getUserInfo();
 
-        // Data:
-        MembersViewModel membersViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MembersViewModel.class);
         if (userName != null) {
             membersViewModel.initActiveMember(userName);
             membersViewModel.getActiveMember().observe(this, member -> {
@@ -138,8 +140,9 @@ public class MainActivity extends AppCompatActivity {
             // set userName value for sending in RestaurantActivity
             userName = firebaseUser.getDisplayName();
             // Register the user Name in SharedViewModel (need in ListviewFragment)
-            SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-            sharedViewModel.setMyUserName(userName);
+            //SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
+            //sharedViewModel.setMyUserName(userName);
+            membersViewModel.setMyUserName(userName);
         }
     }
 

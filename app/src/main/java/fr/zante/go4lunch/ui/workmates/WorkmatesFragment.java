@@ -56,7 +56,9 @@ public class WorkmatesFragment extends Fragment {
         // TODO Perte de la liste si acces au restaurant activity !!!
         membersViewModel.getMembers().observe(this.getViewLifecycleOwner(), members -> {
             this.members = new ArrayList<>(members);
-            adapter.updateMembers(this.members);
+            if (members != null) {
+                adapter.updateMembers(this.members);
+            }
         });
     }
 

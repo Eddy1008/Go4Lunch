@@ -24,7 +24,6 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
     private TextView opening_info;
     private TextView distance;
     private TextView subscription_number;
-    private TextView rating;
 
     private ImageView firstStar;
     private ImageView secondStar;
@@ -40,7 +39,6 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         opening_info = itemView.findViewById(R.id.item_restaurant_textview_opening_info);
         distance = itemView.findViewById(R.id.item_restaurant_textview_distance);
         subscription_number = itemView.findViewById(R.id.item_restaurant_textview_subscription_number);
-        //rating = itemView.findViewById(R.id.item_restaurant_textview_rating);
         firstStar = itemView.findViewById(R.id.item_restaurant_imageview_first_star);
         secondStar = itemView.findViewById(R.id.item_restaurant_imageview_second_star);
         thirdStar = itemView.findViewById(R.id.item_restaurant_imageview_third_star);

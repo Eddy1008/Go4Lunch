@@ -29,7 +29,6 @@ import fr.zante.go4lunch.MainActivity;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.databinding.ActivityLoginBinding;
 import fr.zante.go4lunch.model.Member;
-import fr.zante.go4lunch.ui.MembersViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 
 public class LoginActivity extends AppCompatActivity {
@@ -123,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
                 ""
         );
 
-        MembersViewModel membersViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MembersViewModel.class);
-        membersViewModel.addMember(member);
+        LoginViewModel loginViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(LoginViewModel.class);
+        loginViewModel.addMember(member);
     }
 }

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -28,18 +29,16 @@ import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.databinding.ActivityRestaurantBinding;
 import fr.zante.go4lunch.model.Member;
+import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.SelectedRestaurant;
-import fr.zante.go4lunch.ui.MembersViewModel;
-import fr.zante.go4lunch.ui.RestaurantsViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 
 public class RestaurantActivity extends AppCompatActivity {
 
     private ActivityRestaurantBinding binding;
-    private RestaurantsViewModel restaurantsViewModel;
     private String userName;
 
-    private MembersViewModel membersViewModel;
+    private RestaurantDetailViewModel restaurantDetailViewModel;
     private Member activeMember;
     private List<String> activeMemberLikedRestaurantList;
     private List<SelectedRestaurant> selectedRestaurantList;
@@ -48,6 +47,10 @@ public class RestaurantActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private List<Member> membersJoiningList = new ArrayList<>();
 
+    private ImageView firstStar;
+    private ImageView secondStar;
+    private ImageView thirdStar;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,28 +58,32 @@ public class RestaurantActivity extends AppCompatActivity {
         binding = ActivityRestaurantBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        firstStar = binding.restaurantDetailStarOne;
+        secondStar = binding.restaurantDetailStarTwo;
+        thirdStar = binding.restaurantDetailStarThree;
+
         getInfoFromIntent();
 
-        membersViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        restaurantDetailViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantDetailViewModel.class);
 
-        membersViewModel.initActiveMember(userName);
-        membersViewModel.getActiveMember().observe(this, member -> {
+        restaurantDetailViewModel.initActiveMember(userName);
+        restaurantDetailViewModel.getActiveMember().observe(this, member -> {
             this.activeMember = member;
             if (activeMember != null) {
-                membersViewModel.initMemberLikedRestaurantsList(activeMember);
+                restaurantDetailViewModel.initMemberLikedRestaurantsList(activeMember);
             }
         });
 
-        membersViewModel.initSelectedRestaurantsList();
-        membersViewModel.getSelectedRestaurants().observe(this, selectedRestaurants -> {
+        restaurantDetailViewModel.initSelectedRestaurantsList();
+        restaurantDetailViewModel.getSelectedRestaurants().observe(this, selectedRestaurants -> {
             this.selectedRestaurantList = new ArrayList<>(selectedRestaurants);
             if (selectedRestaurants != null) {
                 Log.d("TAG", "Restaurant Activity : onCreate: \n selectedRestaurant size = " + selectedRestaurants.size() + " elements");
             }
         });
 
-        membersViewModel.initSelectedRestaurantMembersList(restaurantId);
-        membersViewModel.getSelectedRestaurantMembers().observe(this, members -> {
+        restaurantDetailViewModel.initSelectedRestaurantMembersList(restaurantId);
+        restaurantDetailViewModel.getSelectedRestaurantMembers().observe(this, members -> {
             membersJoiningList = new ArrayList<>(members);
             Log.d("TAG", "Restaurant Activity : onCreate: \n la liste des membres ayant selectionné ce restaurant contient : " + membersJoiningList.size() + " elements");
         });
@@ -94,19 +101,37 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     void getRestaurantDataFromBundle() {
-        this.restaurantsViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
-        this.restaurantsViewModel.initSelectedRestaurant(this.restaurantId);
-        this.restaurantsViewModel.getRestaurantById().observe(this, restaurantJson -> {
-
-            binding.restaurantDetailName.setText(restaurantJson.getName());
-            binding.restaurantDetailAddress.setText(restaurantJson.getVicinity());
-            if (restaurantJson.getPhotos() != null) {
+        this.restaurantDetailViewModel.initSelectedRestaurantById(this.restaurantId);
+        this.restaurantDetailViewModel.getRestaurantById().observe(this, restaurantJson -> {
+            RestaurantJson detailedRestaurant = restaurantJson;
+            binding.restaurantDetailName.setText(detailedRestaurant.getName());
+            binding.restaurantDetailAddress.setText(detailedRestaurant.getVicinity());
+            if (detailedRestaurant.getPhotos() != null) {
                 String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
                 String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
-                String myPhotoURL = myBasePhotoURL + restaurantJson.getPhotos().get(0).getPhoto_reference() + apiKey;
+                String myPhotoURL = myBasePhotoURL + detailedRestaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
                 Glide.with(this.getApplicationContext())
                         .load(myPhotoURL)
                         .into(binding.restaurantDetailPhoto);
+            }
+
+            float myIntRating = detailedRestaurant.getRating() * 3 / 5;
+            if (myIntRating > 2.6) {
+                firstStar.setVisibility(View.VISIBLE);
+                secondStar.setVisibility(View.VISIBLE);
+                thirdStar.setVisibility(View.VISIBLE);
+            } else if (myIntRating > 1.8) {
+                firstStar.setVisibility(View.VISIBLE);
+                secondStar.setVisibility(View.VISIBLE);
+                thirdStar.setVisibility(View.INVISIBLE);
+            } else if (myIntRating > 1) {
+                firstStar.setVisibility(View.VISIBLE);
+                secondStar.setVisibility(View.INVISIBLE);
+                thirdStar.setVisibility(View.INVISIBLE);
+            } else {
+                firstStar.setVisibility(View.INVISIBLE);
+                secondStar.setVisibility(View.INVISIBLE);
+                thirdStar.setVisibility(View.INVISIBLE);
             }
 
             // Set the selected restaurant fab button
@@ -114,7 +139,7 @@ public class RestaurantActivity extends AppCompatActivity {
             binding.restaurantDetailFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    updateMemberSelectedRestaurant(restaurantJson.getPlace_id(), restaurantJson.getName());
+                    updateMemberSelectedRestaurant(detailedRestaurant.getPlace_id(), detailedRestaurant.getName());
                 }
             });
 
@@ -123,7 +148,7 @@ public class RestaurantActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + restaurantJson.getFormatted_phone_number()));
+                    intent.setData(Uri.parse("tel:" + detailedRestaurant.getFormatted_phone_number()));
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                         startActivity(intent);
                     } else {
@@ -144,12 +169,12 @@ public class RestaurantActivity extends AppCompatActivity {
             });
 
             // Set the Website button
-            if (restaurantJson.getWebsite() != null) {
+            if (detailedRestaurant.getWebsite() != null) {
                 binding.restaurantDetailLinearLayoutWebsite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intentWebsite = new Intent(Intent.ACTION_VIEW);
-                        intentWebsite.setData(Uri.parse(restaurantJson.getWebsite()));
+                        intentWebsite.setData(Uri.parse(detailedRestaurant.getWebsite()));
                         startActivity(intentWebsite);
                     }
                 });
@@ -165,7 +190,7 @@ public class RestaurantActivity extends AppCompatActivity {
     }
 
     void setRestaurantLikedButtonColor() {
-        membersViewModel.getMemberLikedRestaurants().observe(this, strings -> {
+        restaurantDetailViewModel.getMemberLikedRestaurants().observe(this, strings -> {
             this.activeMemberLikedRestaurantList = new ArrayList<>(strings);
             if (activeMemberLikedRestaurantList.contains(restaurantId)) {
                 binding.restaurantDetailImageviewLike.setImageResource(R.drawable.ic_baseline_is_like_star_24);
@@ -177,15 +202,15 @@ public class RestaurantActivity extends AppCompatActivity {
     
     void updateLikedRestaurantList() {
         if (activeMemberLikedRestaurantList.contains(restaurantId)) {
-            membersViewModel.deleteLikedRestaurant(activeMember, restaurantId);
+            restaurantDetailViewModel.deleteLikedRestaurant(activeMember, restaurantId);
         } else {
-            membersViewModel.addLikedRestaurant(activeMember, restaurantId);
+            restaurantDetailViewModel.addLikedRestaurant(activeMember, restaurantId);
         }
-        membersViewModel.initMemberLikedRestaurantsList(activeMember);
+        restaurantDetailViewModel.initMemberLikedRestaurantsList(activeMember);
     }
 
     void setSelectedRestaurantButtonColor() {
-        membersViewModel.getActiveMember().observe(this, member -> {
+        restaurantDetailViewModel.getActiveMember().observe(this, member -> {
             activeMember = member;
             if (activeMember.getSelectedRestaurantId().equals(restaurantId)) {
                 binding.restaurantDetailFab.setImageResource(R.drawable.ic_baseline_check_circle_24);
@@ -199,7 +224,7 @@ public class RestaurantActivity extends AppCompatActivity {
         if (activeMember.getSelectedRestaurantId().equals("")) {
             activeMember.setSelectedRestaurantId(selectedRestaurantId);
             activeMember.setSelectedRestaurantName(selectedRestaurantName);
-            membersViewModel.updateMember(activeMember);
+            restaurantDetailViewModel.updateMember(activeMember);
             boolean isInSelectedList = false;
             for (int i=0; i<selectedRestaurantList.size(); i++) {
                 if (selectedRestaurantList.get(i).getRestaurantId().equals(selectedRestaurantId)) {
@@ -208,31 +233,31 @@ public class RestaurantActivity extends AppCompatActivity {
             }
             if (!isInSelectedList) {
                 SelectedRestaurant mySelectedRestaurant =  new SelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
-                membersViewModel.addSelectedRestaurant(mySelectedRestaurant);
+                restaurantDetailViewModel.addSelectedRestaurant(mySelectedRestaurant);
             }
-            membersViewModel.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
+            restaurantDetailViewModel.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
         } else {
             if (activeMember.getSelectedRestaurantId().equals(selectedRestaurantId)) {
                 activeMember.setSelectedRestaurantId("");
                 activeMember.setSelectedRestaurantName("");
-                membersViewModel.updateMember(activeMember);
-                membersViewModel.deleteMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
-                membersViewModel.getSelectedRestaurantMembers().observe(this, members -> {
+                restaurantDetailViewModel.updateMember(activeMember);
+                restaurantDetailViewModel.deleteMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
+                restaurantDetailViewModel.getSelectedRestaurantMembers().observe(this, members -> {
                     membersJoiningList = new ArrayList<>(members);
                     if (membersJoiningList.size() == 0) {
-                        membersViewModel.deleteSelectedRestaurant(selectedRestaurantId);
+                        restaurantDetailViewModel.deleteSelectedRestaurant(selectedRestaurantId);
                     }
                 });
             } else {
-                membersViewModel.deleteMemberToSelectedRestaurantMemberList(activeMember, activeMember.getSelectedRestaurantId());
-                membersViewModel.getActiveMemberSelectedRestaurantMembersJoiningList(activeMember.getSelectedRestaurantId()).observe(this, members -> {
+                restaurantDetailViewModel.deleteMemberToSelectedRestaurantMemberList(activeMember, activeMember.getSelectedRestaurantId());
+                restaurantDetailViewModel.getActiveMemberSelectedRestaurantMembersJoiningList(activeMember.getSelectedRestaurantId()).observe(this, members -> {
                     List<Member> myJoiningList = new ArrayList<>(members);
                     if (myJoiningList.size() == 0) {
-                        membersViewModel.deleteSelectedRestaurant(activeMember.getSelectedRestaurantId());
+                        restaurantDetailViewModel.deleteSelectedRestaurant(activeMember.getSelectedRestaurantId());
                     }
                     activeMember.setSelectedRestaurantId(selectedRestaurantId);
                     activeMember.setSelectedRestaurantName(selectedRestaurantName);
-                    membersViewModel.updateMember(activeMember);
+                    restaurantDetailViewModel.updateMember(activeMember);
                     boolean isInSelectedList = false;
                     for (int i=0; i<selectedRestaurantList.size(); i++) {
                         if (selectedRestaurantList.get(i).getRestaurantId().equals(selectedRestaurantId)) {
@@ -241,9 +266,9 @@ public class RestaurantActivity extends AppCompatActivity {
                     }
                     if (!isInSelectedList) {
                         SelectedRestaurant mySelectedRestaurant =  new SelectedRestaurant(selectedRestaurantId, selectedRestaurantName);
-                        membersViewModel.addSelectedRestaurant(mySelectedRestaurant);
+                        restaurantDetailViewModel.addSelectedRestaurant(mySelectedRestaurant);
                     }
-                    membersViewModel.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
+                    restaurantDetailViewModel.addMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);
                 });
             }
         }
@@ -262,7 +287,7 @@ public class RestaurantActivity extends AppCompatActivity {
         recyclerView = binding.restaurantDetailRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        membersViewModel.getSelectedRestaurantMembers().observe(this, members -> {
+        restaurantDetailViewModel.getSelectedRestaurantMembers().observe(this, members -> {
             membersJoiningList = new ArrayList<>(members);
             recyclerView.setAdapter(new RestaurantDetailRecyclerViewAdapter(membersJoiningList));
         });
