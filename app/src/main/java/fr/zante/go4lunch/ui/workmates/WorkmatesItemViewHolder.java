@@ -2,9 +2,11 @@ package fr.zante.go4lunch.ui.workmates;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,22 +30,34 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void bind(Member member) {
-        String toDisplay = member.getName() + " is eating here: " + member.getSelectedRestaurantName();
+        String toDisplay = "";
+        if (member.getSelectedRestaurantName().equals("")) {
+            toDisplay = member.getName() + " hasn't decided yet ";
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(view.getContext(), "ce collegue n'a pas encore fait son choix !", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            Log.d("TAG", "bind: : deja choisi son restaurant : getSelectedRestaurantName = " + member.getSelectedRestaurantName());
+            toDisplay = member.getName() + " is eating here: " + member.getSelectedRestaurantName();
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(view.getContext(), RestaurantActivity.class);
+                    Bundle myBundle = new Bundle();
+                    myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
+                    myBundle.putString("USER_NAME", member.getName());
+                    intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
+                    view.getContext().startActivity(intent);
+                }
+            });
+        }
         Glide.with(this.memberPhoto.getContext())
                 .load(member.getAvatarUrl())
                 .apply(RequestOptions.circleCropTransform())
                 .into(memberPhoto);
         info.setText(toDisplay);
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), RestaurantActivity.class);
-                Bundle myBundle = new Bundle();
-                myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
-                myBundle.putString("USER_NAME", member.getName());
-                intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
-                view.getContext().startActivity(intent);
-            }
-        });
     }
 }

@@ -37,9 +37,12 @@ public class MembersViewModel extends ViewModel {
     // *******************************
 
     public void initMembersList() {
+        // TODO effacer pour bon fonctionnement de la liste des collegues !
+        /**
         if (this.membersData != null) {
             return;
         }
+         */
         membersData = repository.getMembersLiveDataList();
     }
     public LiveData<List<Member>> getMembers() { return this.membersData; }

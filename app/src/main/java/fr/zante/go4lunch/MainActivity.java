@@ -139,9 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     .into(navHeaderMainBinding.imageViewAvatar);
             // set userName value for sending in RestaurantActivity
             userName = firebaseUser.getDisplayName();
-            // Register the user Name in SharedViewModel (need in ListviewFragment)
-            //SharedViewModel sharedViewModel = new ViewModelProvider(this).get(SharedViewModel.class);
-            //sharedViewModel.setMyUserName(userName);
+            // Register the user Name in ViewModel (need in ListviewFragment)
             membersViewModel.setMyUserName(userName);
         }
     }
