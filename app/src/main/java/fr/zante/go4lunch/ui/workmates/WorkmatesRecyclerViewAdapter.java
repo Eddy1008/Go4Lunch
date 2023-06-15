@@ -16,9 +16,11 @@ import fr.zante.go4lunch.model.Member;
 public class WorkmatesRecyclerViewAdapter extends RecyclerView.Adapter<WorkmatesItemViewHolder> {
 
     private List<Member> members;
+    private String userName;
 
-    public WorkmatesRecyclerViewAdapter(List<Member> members) {
+    public WorkmatesRecyclerViewAdapter(List<Member> members, String userName) {
         this.members = members;
+        this.userName = userName;
     }
 
     @NonNull
@@ -32,7 +34,7 @@ public class WorkmatesRecyclerViewAdapter extends RecyclerView.Adapter<Workmates
 
     @Override
     public void onBindViewHolder(@NonNull WorkmatesItemViewHolder holder, int position) {
-        holder.bind(members.get(position));
+        holder.bind(members.get(position), userName);
     }
 
     @Override

@@ -37,12 +37,9 @@ public class MembersViewModel extends ViewModel {
     // *******************************
 
     public void initMembersList() {
-        // TODO effacer pour bon fonctionnement de la liste des collegues !
-        /**
         if (this.membersData != null) {
             return;
         }
-         */
         membersData = repository.getMembersLiveDataList();
     }
     public LiveData<List<Member>> getMembers() { return this.membersData; }
@@ -84,6 +81,17 @@ public class MembersViewModel extends ViewModel {
     }
 
     public LiveData<List<SelectedRestaurant>> getSelectedRestaurants() { return this.selectedRestaurantsData; }
+
+
+    // ****************************************
+    // ***** SELECTED RESTAURANTS MEMBERS *****
+    // ****************************************
+
+    public LiveData<List<Member>> getSelectedRestaurantMembersJoiningList(String selectedRestaurantId) {
+        LiveData<List<Member>> myList = repository.getSelectedRestaurantMemberLiveDataList(selectedRestaurantId);
+        return myList;
+    }
+
 
     // **************************
     // ********* SHARED *********

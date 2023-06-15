@@ -79,7 +79,6 @@ public class MembersRepository {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                myMembersList.clear();
                 Member myActiveMember = new Member();
                 for (DataSnapshot data: snapshot.getChildren()) {
                     Member member = data.getValue(Member.class);
@@ -197,11 +196,49 @@ public class MembersRepository {
     }
 
     /**
+     * @param selectedRestaurantId selected Restaurant Id we want to return
+     * @return the selected restaurant with the id sent
+     */
+    public LiveData<SelectedRestaurant> getSelectedRestaurantById (String selectedRestaurantId) {
+        MutableLiveData<SelectedRestaurant> selectedRestaurantByIdMutableLiveData = new MutableLiveData<>();
+        mySelectedRestaurantsRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                SelectedRestaurant mySelectedRestaurant = new SelectedRestaurant();
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    SelectedRestaurant selectedRestaurantById = data.getValue(SelectedRestaurant.class);
+                    if (selectedRestaurantById != null) {
+                        if (selectedRestaurantById.getRestaurantId().equals(selectedRestaurantId)) {
+                            mySelectedRestaurant = selectedRestaurantById;
+                        }
+
+                    }
+                }
+                selectedRestaurantByIdMutableLiveData.setValue(mySelectedRestaurant);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        return selectedRestaurantByIdMutableLiveData;
+    }
+
+    /**
      * @param selectedRestaurantId selectedRestaurant's id to remove from database
      * Remove the SelectedRestaurant from the list in database
      */
     public void deleteSelectedRestaurant(String selectedRestaurantId) {
         mySelectedRestaurantsRef.child(selectedRestaurantId).removeValue();
+    }
+
+    /**
+     * @param selectedRestaurant item we want to update
+     * Update the value of the selected restaurant memberJoiningNumber in database
+     */
+    public void updateSelectedRestaurant(SelectedRestaurant selectedRestaurant) {
+        mySelectedRestaurantsRef.child(selectedRestaurant.getRestaurantId()).child("memberJoiningNumber").setValue(selectedRestaurant.getMemberJoiningNumber());
     }
 
 

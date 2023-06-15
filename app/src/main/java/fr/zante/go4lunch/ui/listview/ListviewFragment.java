@@ -1,6 +1,7 @@
 package fr.zante.go4lunch.ui.listview;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.zante.go4lunch.databinding.FragmentListviewBinding;
+import fr.zante.go4lunch.model.Member;
 import fr.zante.go4lunch.model.RestaurantJson;
+import fr.zante.go4lunch.model.SelectedRestaurant;
 import fr.zante.go4lunch.ui.MembersViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 
@@ -29,6 +32,8 @@ public class ListviewFragment extends Fragment {
     private String userName;
 
     private List<RestaurantJson> restaurants = new ArrayList<>();
+    private List<SelectedRestaurant> selectedRestaurantsList = new ArrayList<>();
+    private List<Integer> restaurantsMembersNumber = new ArrayList<>();
     private RecyclerView recyclerView;
     private ListviewRecyclerViewAdapter adapter;
     private MembersViewModel membersViewModel;
@@ -48,8 +53,9 @@ public class ListviewFragment extends Fragment {
         myLat = membersViewModel.getMyLat();
         myLng = membersViewModel.getMyLng();
         userName = membersViewModel.getMyUserName();
-        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, this.userName);
+        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, this.userName, this.restaurantsMembersNumber);
 
+        getSelectedRestaurantList();
         configureViewModel();
         getRestaurants();
         initList();
@@ -61,9 +67,27 @@ public class ListviewFragment extends Fragment {
         this.membersViewModel.init(myLat, myLng);
     }
 
+    private void getSelectedRestaurantList() {
+        membersViewModel.getSelectedRestaurants().observe(getViewLifecycleOwner(), selectedRestaurants -> {
+            selectedRestaurantsList = new ArrayList<>(selectedRestaurants);
+            Log.d("TAG", "getSelectedRestaurantList: selectedRestaurantsList.size() = " + selectedRestaurantsList.size());
+        });
+    }
+
+    // TODO
     private void getRestaurants() {
         membersViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
+            for (RestaurantJson restaurant : restaurants) {
+                int myRestaurantMemberNumber = 0;
+                for (int i=0; i<selectedRestaurantsList.size(); i++) {
+                    if (restaurant.getPlace_id().equals(selectedRestaurantsList.get(i).getRestaurantId())) {
+                        myRestaurantMemberNumber = selectedRestaurantsList.get(i).getMemberJoiningNumber();
+                        break;
+                    }
+                }
+                restaurantsMembersNumber.add(myRestaurantMemberNumber);
+            }
             adapter.updateRestaurants(restaurants);
         });
     }

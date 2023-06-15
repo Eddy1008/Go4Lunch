@@ -87,8 +87,16 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     public LiveData<List<SelectedRestaurant>> getSelectedRestaurants() { return this.selectedRestaurantsData; }
 
+    public LiveData<SelectedRestaurant> getSelectedRestaurantById(String selectedRestaurantId) {
+        LiveData<SelectedRestaurant> mySelectedRestaurantById =  repository.getSelectedRestaurantById(selectedRestaurantId);
+        return mySelectedRestaurantById;
+    }
+
     public void deleteSelectedRestaurant(String selectedRestaurantId) { repository.deleteSelectedRestaurant(selectedRestaurantId);}
 
+    public void updateSelectedRestaurant(SelectedRestaurant selectedRestaurant) {
+        repository.updateSelectedRestaurant(selectedRestaurant);
+    }
 
     // ****************************************
     // ***** SELECTED RESTAURANTS MEMBERS *****

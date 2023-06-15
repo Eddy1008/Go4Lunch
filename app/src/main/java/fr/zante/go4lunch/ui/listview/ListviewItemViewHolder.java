@@ -25,6 +25,7 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
     private TextView distance;
     private TextView subscription_number;
 
+    private ImageView joiningMembers;
     private ImageView firstStar;
     private ImageView secondStar;
     private ImageView thirdStar;
@@ -39,12 +40,13 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         opening_info = itemView.findViewById(R.id.item_restaurant_textview_opening_info);
         distance = itemView.findViewById(R.id.item_restaurant_textview_distance);
         subscription_number = itemView.findViewById(R.id.item_restaurant_textview_subscription_number);
+        joiningMembers = itemView.findViewById(R.id.item_restaurant_imageview_joining_members);
         firstStar = itemView.findViewById(R.id.item_restaurant_imageview_first_star);
         secondStar = itemView.findViewById(R.id.item_restaurant_imageview_second_star);
         thirdStar = itemView.findViewById(R.id.item_restaurant_imageview_third_star);
     }
 
-    public void bind(RestaurantJson restaurant, double lat, double lng, String userName) {
+    public void bind(RestaurantJson restaurant, double lat, double lng, String userName, int restaurantMembersListSize) {
         if (restaurant.getPhotos() != null) {
             String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
             String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
@@ -69,8 +71,17 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         String myDistance = myDistanceToRestaurant + "m";
         distance.setText(myDistance);
 
-        // TODO recupérer le nombre de collegues inscrits pour ce resaurant : onSnapshotListener
-        subscription_number.setText("3");
+        // TODO
+        String membersJoiningNumber = "(" + restaurantMembersListSize + ")";
+        subscription_number.setText(membersJoiningNumber);
+        if (restaurantMembersListSize == 0) {
+            joiningMembers.setVisibility(View.INVISIBLE);
+            subscription_number.setVisibility(View.INVISIBLE);
+        } else {
+            joiningMembers.setVisibility(View.VISIBLE);
+            subscription_number.setVisibility(View.VISIBLE);
+        }
+
 
         float myIntRating = restaurant.getRating() * 3 / 5;
         if (myIntRating > 2.6) {

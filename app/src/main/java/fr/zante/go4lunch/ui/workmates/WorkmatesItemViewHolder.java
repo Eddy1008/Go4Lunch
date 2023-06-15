@@ -29,7 +29,7 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
         info = itemView.findViewById(R.id.item_workmates_info);
     }
 
-    public void bind(Member member) {
+    public void bind(Member member, String userName) {
         String toDisplay = "";
         if (member.getSelectedRestaurantName().equals("")) {
             toDisplay = member.getName() + " hasn't decided yet ";
@@ -48,7 +48,7 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
                     Intent intent = new Intent(view.getContext(), RestaurantActivity.class);
                     Bundle myBundle = new Bundle();
                     myBundle.putString("RESTAURANT_PLACE_ID", member.getSelectedRestaurantId());
-                    myBundle.putString("USER_NAME", member.getName());
+                    myBundle.putString("USER_NAME", userName);
                     intent.putExtra("BUNDLE_RESTAURANT_SELECTED", myBundle);
                     view.getContext().startActivity(intent);
                 }

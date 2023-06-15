@@ -25,6 +25,7 @@ public class WorkmatesFragment extends Fragment {
     private FragmentWorkmatesBinding binding;
 
     private List<Member> members = new ArrayList<>();
+    private String userName;
     private RecyclerView recyclerView;
     private WorkmatesRecyclerViewAdapter adapter;
     private MembersViewModel membersViewModel;
@@ -38,18 +39,16 @@ public class WorkmatesFragment extends Fragment {
         recyclerView = binding.workmatesRecyclerview;
         recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext()));
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
-        adapter = new WorkmatesRecyclerViewAdapter(this.members);
 
-        configureViewModel();
+        membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
+        membersViewModel.initMembersList();
+        userName = membersViewModel.getMyUserName();
+        adapter = new WorkmatesRecyclerViewAdapter(this.members, this.userName);
+
         getMembers();
         initList();
 
         return root;
-    }
-
-    private void configureViewModel() {
-        membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
-        membersViewModel.initMembersList();
     }
 
     private void getMembers() {

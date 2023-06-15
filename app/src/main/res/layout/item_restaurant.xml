@@ -54,6 +54,7 @@
         android:id="@+id/item_restaurant_textview_subscription_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="invisible"
         android:layout_marginEnd="8dp"
         android:text="(2)"
         android:textSize="12sp"
@@ -61,6 +62,16 @@
         app:layout_constraintBottom_toTopOf="@+id/item_restaurant_imageview_first_star"
         app:layout_constraintEnd_toStartOf="@+id/item_restaurant_photo"
         app:layout_constraintTop_toBottomOf="@id/item_restaurant_textview_distance" />
+
+    <ImageView
+        android:id="@+id/item_restaurant_imageview_joining_members"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_baseline_person_24"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/item_restaurant_photo"
+        app:layout_constraintEnd_toStartOf="@id/item_restaurant_textview_subscription_number"
+        app:layout_constraintTop_toTopOf="@+id/item_restaurant_photo" />
 
     <ImageView
         android:id="@+id/item_restaurant_imageview_first_star"

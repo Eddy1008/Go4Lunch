@@ -4,10 +4,12 @@ public class SelectedRestaurant {
 
     private String restaurantId;
     private String name;
+    private int memberJoiningNumber;
 
-    public SelectedRestaurant(String restaurantId, String name) {
+    public SelectedRestaurant(String restaurantId, String name, int memberJoiningNumber) {
         this.restaurantId = restaurantId;
         this.name = name;
+        this.memberJoiningNumber = memberJoiningNumber;
     }
 
     public SelectedRestaurant() {}
@@ -26,4 +28,6 @@ public class SelectedRestaurant {
         this.name = name;
     }
 
+    public int getMemberJoiningNumber() { return memberJoiningNumber; }
+    public void setMemberJoiningNumber(int memberJoiningNumber) { this.memberJoiningNumber = memberJoiningNumber; }
 }
