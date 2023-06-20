@@ -34,4 +34,5 @@
     <string name="selected_restaurant_updated">Choice updated !</string>
     <string name="no_website_available">No website for the moment !</string>
     <string name="make_a_choice">Please Make a choice and retry !</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>
