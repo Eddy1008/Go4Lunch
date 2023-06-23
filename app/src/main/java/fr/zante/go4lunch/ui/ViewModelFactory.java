@@ -8,6 +8,7 @@ import fr.zante.go4lunch.data.GooglePlacesRepository;
 import fr.zante.go4lunch.data.MembersRepository;
 import fr.zante.go4lunch.data.RetrofitService;
 import fr.zante.go4lunch.ui.login.LoginViewModel;
+import fr.zante.go4lunch.ui.registration.RegisterViewModel;
 import fr.zante.go4lunch.ui.restaurantdetail.RestaurantDetailViewModel;
 
 public class ViewModelFactory implements ViewModelProvider.Factory{
@@ -39,6 +40,9 @@ public class ViewModelFactory implements ViewModelProvider.Factory{
         }
         if (modelClass.isAssignableFrom(LoginViewModel.class)) {
             return (T) new LoginViewModel(membersRepository);
+        }
+        if (modelClass.isAssignableFrom(RegisterViewModel.class)) {
+            return (T) new RegisterViewModel(membersRepository);
         }
         if (modelClass.isAssignableFrom(RestaurantDetailViewModel.class)) {
             return (T) new RestaurantDetailViewModel(membersRepository,googlePlacesRepository);
