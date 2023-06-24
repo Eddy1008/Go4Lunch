@@ -38,6 +38,10 @@
             android:label="@string/title_activity_register"
             android:theme="@style/Theme.Go4Lunch.login" />
         <activity
+            android:name=".ui.twitter.TwitterActivity"
+            android:exported="false"
+            android:label="@string/title_activity_twitter" />
+        <activity
             android:name=".ui.restaurantdetail.RestaurantActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity

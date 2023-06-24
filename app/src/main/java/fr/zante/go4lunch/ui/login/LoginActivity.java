@@ -33,6 +33,7 @@ import fr.zante.go4lunch.databinding.ActivityLoginBinding;
 import fr.zante.go4lunch.model.Member;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 import fr.zante.go4lunch.ui.registration.RegisterActivity;
+import fr.zante.go4lunch.ui.twitter.TwitterActivity;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -88,7 +89,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         // GOOGLE SIGN IN
-        binding.signInButton.setOnClickListener(new View.OnClickListener() {
+        binding.signInButtonGoogle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = googleSigninClient.getSignInIntent();
@@ -100,7 +101,9 @@ public class LoginActivity extends AppCompatActivity {
         binding.signInButtonTwitter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(LoginActivity.this, "Will allow you to connect with twitter", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, TwitterActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
             }
         });
 

@@ -36,4 +36,5 @@
     <string name="make_a_choice">Please Make a choice and retry !</string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="title_activity_register">register</string>
+    <string name="title_activity_twitter">Twitter</string>
 </resources>

@@ -50,7 +50,7 @@
                 android:id="@+id/sign_in_edittext_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
                 android:padding="8dp"
@@ -162,13 +162,16 @@
                 app:layout_constraintStart_toEndOf="@+id/sign_in_textview_or"
                 app:layout_constraintTop_toTopOf="@+id/sign_in_textview_or" />
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/sign_in_button"
+            <Button
+                android:id="@+id/sign_in_button_google"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
                 android:layout_marginEnd="40dp"
                 android:layout_marginTop="24dp"
+                android:backgroundTint="@color/orange"
+                android:text="GOOGLE sign in"
+                android:drawableLeft="@drawable/logo_google_circle_24px"
                 app:layout_constraintTop_toBottomOf="@+id/sign_in_textview_or"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -183,7 +186,7 @@
                 android:backgroundTint="@color/purple_500"
                 android:text="Twitter sign in"
                 android:drawableLeft="@drawable/logo_twitter_circle_24px"
-                app:layout_constraintTop_toBottomOf="@+id/sign_in_button"
+                app:layout_constraintTop_toBottomOf="@+id/sign_in_button_google"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
