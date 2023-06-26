@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO
+        // TODO gerer la recherche
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }

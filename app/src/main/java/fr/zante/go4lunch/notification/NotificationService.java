@@ -36,6 +36,7 @@ public class NotificationService extends FirebaseMessagingService {
     }
 
     private void sendVisualNotification(RemoteMessage.Notification notification) {
+        // TODO PROGRAMMER UNE NOTIF A MIDI AVEC DES INFOS CONTENUS EN BDDD
         // Create an Intent that will be shown when user will click on the Notification
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);

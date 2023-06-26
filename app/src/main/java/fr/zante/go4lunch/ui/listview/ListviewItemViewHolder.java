@@ -71,7 +71,6 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         String myDistance = myDistanceToRestaurant + "m";
         distance.setText(myDistance);
 
-        // TODO
         String membersJoiningNumber = "(" + restaurantMembersListSize + ")";
         subscription_number.setText(membersJoiningNumber);
         if (restaurantMembersListSize == 0) {
@@ -81,7 +80,6 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
             joiningMembers.setVisibility(View.VISIBLE);
             subscription_number.setVisibility(View.VISIBLE);
         }
-
 
         float myIntRating = restaurant.getRating() * 3 / 5;
         if (myIntRating > 2.6) {

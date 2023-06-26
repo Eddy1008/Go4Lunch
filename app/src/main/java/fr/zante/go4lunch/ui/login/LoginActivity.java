@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.signInTextviewForgetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO FORGET PASSWORD BUTTON
                 Toast.makeText(LoginActivity.this, "Upcoming feature !", Toast.LENGTH_SHORT).show();
             }
         });
@@ -84,7 +85,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 String email = binding.signInEdittextName.getText().toString();
                 String password = binding.signInEdittextPassword.getText().toString();
-                signInWithEmailAndPassword(email, password);
+                if (email.isEmpty()) {
+                    binding.signInEdittextName.setError("Invalid email format");
+                } else if (password.isEmpty() || password.length()<6) {
+                    binding.signInEdittextPassword.setError("Password must contain at least 6 characters");
+                } else {
+                    signInWithEmailAndPassword(email, password);
+                }
             }
         });
 
@@ -111,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.signInButtonFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // TODO FACEBOOK SIGN IN
                 Toast.makeText(LoginActivity.this, "Will allow you to connect with Facebook", Toast.LENGTH_SHORT).show();
             }
         });

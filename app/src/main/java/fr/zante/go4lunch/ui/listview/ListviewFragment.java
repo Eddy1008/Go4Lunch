@@ -63,6 +63,13 @@ public class ListviewFragment extends Fragment {
         return root;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getSelectedRestaurantList();
+        getRestaurants();
+    }
+
     private void configureViewModel() {
         this.membersViewModel.init(myLat, myLng);
     }
@@ -74,13 +81,16 @@ public class ListviewFragment extends Fragment {
         });
     }
 
-    // TODO
     private void getRestaurants() {
+        Log.d("TAG", "getRestaurants: 11111 ");
         membersViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
+            restaurantsMembersNumber.clear();
+            Log.d("TAG", "getRestaurants: 222222 ");
             for (RestaurantJson restaurant : restaurants) {
                 int myRestaurantMemberNumber = 0;
                 for (int i=0; i<selectedRestaurantsList.size(); i++) {
+                    Log.d("TAG", "selectedRestaurant = " + selectedRestaurantsList.get(i).getName() + " nb " + selectedRestaurantsList.get(i).getMemberJoiningNumber());
                     if (restaurant.getPlace_id().equals(selectedRestaurantsList.get(i).getRestaurantId())) {
                         myRestaurantMemberNumber = selectedRestaurantsList.get(i).getMemberJoiningNumber();
                         break;
@@ -88,7 +98,7 @@ public class ListviewFragment extends Fragment {
                 }
                 restaurantsMembersNumber.add(myRestaurantMemberNumber);
             }
-            adapter.updateRestaurants(restaurants);
+            adapter.updateRestaurants(restaurants, restaurantsMembersNumber);
         });
     }
 

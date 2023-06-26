@@ -197,7 +197,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void configureRestaurantViewModel() {
-        //restaurantsViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(RestaurantsViewModel.class);
         membersViewModel.init(myLatLng.latitude, myLatLng.longitude);
     }
 
@@ -210,7 +209,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                     marker.remove();
                 }
                 markers.clear();
-                Log.d("TAG", "getRestaurantsList: selectedRestaurantsList.size = " + selectedRestaurantsList.size());
                 for (RestaurantJson restaurant : restaurants) {
                     if (checkIsIsInMyList(restaurant.getPlace_id(), selectedRestaurantsList)) {
                         Marker marker = map.addMarker(new MarkerOptions()
