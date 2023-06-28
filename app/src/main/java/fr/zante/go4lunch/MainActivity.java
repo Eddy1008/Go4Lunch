@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -166,22 +168,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO gerer la recherche : pas acces aux listes depuis main activity ...
         getMenuInflater().inflate(R.menu.main, menu);
-        /**
-        SearchView searchView = (SearchView) findViewById(R.id.action_search);
+        MenuItem searchViewBox = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchViewBox.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
+                membersViewModel.getFilteredRestaurants(s);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String s) {
+                membersViewModel.getFilteredRestaurants(s);
                 return false;
             }
         });
-         */
         return true;
     }
 
@@ -210,8 +212,8 @@ public class MainActivity extends AppCompatActivity {
     private void getDailyNotification() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.set(Calendar.HOUR_OF_DAY, 21);
-        calendar.set(Calendar.MINUTE, 51);
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 

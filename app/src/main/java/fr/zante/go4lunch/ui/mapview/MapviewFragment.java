@@ -65,7 +65,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
 
     // A default location
     private final LatLng defaultLocation = new LatLng(50.6292, 3.0573);
-    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_ZOOM = 14;
     private boolean locationPermissionGranted;
     private Location lastKnownLocation;
 
@@ -116,8 +116,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                 onMapReady(map);
             }
         });
-
-        initSearch();
 
         return root;
     }
@@ -245,47 +243,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                     return false;
                 }
             });
-        });
-    }
-
-    private void initSearch() {
-        SearchView searchView = binding.mapviewSearchView;
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                ArrayList<RestaurantJson> filteredRestaurantList = new ArrayList<>();
-                for (Marker marker : markers) {
-                    marker.remove();
-                }
-                markers.clear();
-                for (RestaurantJson restaurant : restaurants) {
-                    if (restaurant.getName().toLowerCase().contains(s.toLowerCase())) {
-                        if (checkIsIsInMyList(restaurant.getPlace_id(), selectedRestaurantsList)) {
-                            Marker marker = map.addMarker(new MarkerOptions()
-                                    .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                                    .title(restaurant.getName())
-                                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                            );
-                            marker.setTag(restaurant.getPlace_id());
-                            markers.add(marker);
-                        } else {
-                            Marker marker = map.addMarker(new MarkerOptions()
-                                    .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                                    .title(restaurant.getName())
-                            );
-                            marker.setTag(restaurant.getPlace_id());
-                            markers.add(marker);
-                        }
-                    }
-                }
-
-                return false;
-            }
         });
     }
 

@@ -39,9 +39,6 @@ public class ListviewFragment extends Fragment {
     private ListviewRecyclerViewAdapter adapter;
     private MembersViewModel membersViewModel;
 
-    private SearchView searchView;
-
-
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -62,8 +59,6 @@ public class ListviewFragment extends Fragment {
         configureViewModel();
         getRestaurants();
         initList();
-
-        initSearch();
 
         return root;
     }
@@ -100,40 +95,6 @@ public class ListviewFragment extends Fragment {
                 restaurantsMembersNumber.add(myRestaurantMemberNumber);
             }
             adapter.updateRestaurants(restaurants, restaurantsMembersNumber);
-        });
-    }
-
-    private void initSearch() {
-        SearchView searchView = binding.listviewSearchView;
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                ArrayList<RestaurantJson> filteredList = new ArrayList<>();
-                for (RestaurantJson restaurantJson : restaurants) {
-                    if (restaurantJson.getName().toLowerCase().contains(s.toLowerCase())) {
-                        filteredList.add(restaurantJson);
-                    }
-                }
-                ArrayList<Integer> filteredListInteger = new ArrayList<>();
-                for (RestaurantJson restaurantJson : filteredList) {
-                    int myInt = 0;
-                    for (int i=0; i<selectedRestaurantsList.size(); i++) {
-                        if (restaurantJson.getPlace_id().equals(selectedRestaurantsList.get(i).getRestaurantId())) {
-                            myInt = selectedRestaurantsList.get(i).getMemberJoiningNumber();
-                            break;
-                        }
-                    }
-                    filteredListInteger.add(myInt);
-                }
-                adapter = new ListviewRecyclerViewAdapter(filteredList, myLat, myLng, userName, filteredListInteger);
-                recyclerView.setAdapter(adapter);
-                return false;
-            }
         });
     }
 
