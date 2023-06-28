@@ -1,9 +1,17 @@
 package fr.zante.go4lunch;
 
+import android.app.AlarmManager;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -24,9 +32,17 @@ import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+
 import fr.zante.go4lunch.databinding.ActivityMainBinding;
 import fr.zante.go4lunch.databinding.NavHeaderMainBinding;
 import fr.zante.go4lunch.model.Member;
+import fr.zante.go4lunch.model.RestaurantJson;
+import fr.zante.go4lunch.notification.AlarmReceiver;
+import fr.zante.go4lunch.notification.NotificationService;
 import fr.zante.go4lunch.ui.MembersViewModel;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 import fr.zante.go4lunch.ui.login.LoginActivity;
@@ -41,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private String userName;
     private Member activeMember;
+    private List<Member> activeMemberSelectedRestaurantMemberList = new ArrayList<>();
+    private String myInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +79,8 @@ public class MainActivity extends AppCompatActivity {
             membersViewModel.initActiveMember(userName);
             membersViewModel.getActiveMember().observe(this, member -> {
                 activeMember = member;
+                createNotificationChannel();
+                getDailyNotification();
             });
         }
 
@@ -146,8 +166,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // TODO gerer la recherche
+        // TODO gerer la recherche : pas acces aux listes depuis main activity ...
         getMenuInflater().inflate(R.menu.main, menu);
+        /**
+        SearchView searchView = (SearchView) findViewById(R.id.action_search);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+         */
         return true;
     }
 
@@ -156,5 +190,77 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void createNotificationChannel() {
+        // Support Version >= Android 8
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence channelName = "Firebase Messages";
+            String channelDescription = "Channel for alarm manager Notifications";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel mChannel = new NotificationChannel("myNotificationChannel", channelName, importance);
+            mChannel.setDescription(channelDescription);
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(mChannel);
+        }
+    }
+
+    // notification journalieres:
+    private void getDailyNotification() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.set(Calendar.HOUR_OF_DAY, 21);
+        calendar.set(Calendar.MINUTE, 51);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
+        //getActiveMemberSelectedRestaurantMembersInfo(activeMember.getSelectedRestaurantId());
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        Bundle myBundle = new Bundle();
+        myBundle.putString("NOTIFICATION_MEMBER_NAME", activeMember.getName());
+        myBundle.putString("NOTIFICATION_SELECTED_RESTAURANT_ID", activeMember.getSelectedRestaurantId());
+        //myBundle.putString("NOTIFICATION_INFOS", myInfo);
+        intent.putExtra("BUNDLE_NOTIFICATION_INFO", myBundle);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        // TODO PB POUR REPETITION DE LA NOTIFICATION CHAQUE JOUR
+        //alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        //alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+
+        Log.d("TAG", "getDailyNotification: La notification sera envoyée le : \n "
+                + calendar.get(Calendar.DAY_OF_MONTH) + "/" +  calendar.get(Calendar.MONTH) + "/" + calendar.get(Calendar.YEAR)
+                + " \n à : " + calendar.get(Calendar.HOUR_OF_DAY) + "h" +  calendar.get(Calendar.MINUTE));
+    }
+
+    private void getActiveMemberSelectedRestaurantMembersInfo(String activeMemberSelectedRestaurantId) {
+        membersViewModel.getSelectedRestaurantMembersJoiningList(activeMemberSelectedRestaurantId).observe(this, members -> {
+            activeMemberSelectedRestaurantMemberList = new ArrayList<>(members);
+            if (activeMemberSelectedRestaurantMemberList.size() == 0) {
+                myInfo = "Vous n'avez pas fait votre choix pour ce midi !";
+            } else if (activeMemberSelectedRestaurantMemberList.size() == 1) {
+                myInfo = "Vous mangerez seul ce midi !";
+            } else {
+                String memberListString = "";
+                for (int i=0; i<activeMemberSelectedRestaurantMemberList.size(); i++) {
+                    Log.d("TAG", "getActiveMemberSelectedRestaurantMembersInfo: joining member : " + activeMemberSelectedRestaurantMemberList.get(i).getName());
+                    if (memberListString.equals("")) {
+                        if (!Objects.equals(activeMemberSelectedRestaurantMemberList.get(i).getMemberId(), activeMember.getMemberId())) {
+                            memberListString = activeMemberSelectedRestaurantMemberList.get(i).getName();
+                        }
+                    } else {
+                        if (!Objects.equals(activeMemberSelectedRestaurantMemberList.get(i).getMemberId(), activeMember.getMemberId())) {
+                            memberListString = memberListString + ", " + activeMemberSelectedRestaurantMemberList.get(i).getName();
+                        }
+                    }
+                }
+                myInfo = activeMemberSelectedRestaurantMemberList.size() + " collègue(s) se joignent à vous ce midi: " + memberListString;
+            }
+            Log.d("TAG", "getActiveMemberSelectedRestaurantMembersInfo: my info = " + myInfo);
+        });
     }
 }

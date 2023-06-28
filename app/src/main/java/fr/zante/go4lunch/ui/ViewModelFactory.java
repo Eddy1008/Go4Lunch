@@ -31,7 +31,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory{
             RetrofitService.getPlacesApi()
     );
 
-    private final MembersRepository membersRepository = new MembersRepository();
+    private final MembersRepository membersRepository = MembersRepository.getInstance();
 
     @NonNull
     @Override

@@ -32,6 +32,15 @@ public class MembersRepository {
     private List<SelectedRestaurant> mySelectedRestaurantsList = new ArrayList<>();
     private List<Member> mySelectedRestaurantMemberList = new ArrayList<>();
 
+    private static MembersRepository repository;
+
+    public static MembersRepository getInstance() {
+        if (repository == null) {
+            repository = new MembersRepository();
+        }
+        return repository;
+    }
+
 
     // *******************************
     // *********** MEMBERS ***********

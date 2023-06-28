@@ -11,12 +11,22 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.List;
+
 import fr.zante.go4lunch.MainActivity;
 import fr.zante.go4lunch.R;
+import fr.zante.go4lunch.data.MembersRepository;
+import fr.zante.go4lunch.model.Member;
+import fr.zante.go4lunch.ui.ViewModelFactory;
 
 public class NotificationService extends FirebaseMessagingService {
 
@@ -30,31 +40,21 @@ public class NotificationService extends FirebaseMessagingService {
             // Get message sent by Firebase
             RemoteMessage.Notification notification = message.getNotification();
             // Show message in Console
-            Log.d("NOTIFICATIONTAG", "onMessageReceived: " + notification.getBody());
+            Log.d("TAG", "onMessageReceived: " + notification.getBody());
             sendVisualNotification(notification);
         }
     }
 
     private void sendVisualNotification(RemoteMessage.Notification notification) {
-        // TODO PROGRAMMER UNE NOTIF A MIDI AVEC DES INFOS CONTENUS EN BDDD
-        // Create an Intent that will be shown when user will click on the Notification
+        // Contenu a envoyé:
+        String monInfo = "Aujourd'hui, tu manges seul !";
+
+        // INTENT pour afficher l'activité au clic sur la notif:
         Intent intent = new Intent(this, MainActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-        // Create a Channel (Android 8)
-        String channelId = getString(R.string.default_notification_channel_id);
-
-        // Build a Notification object
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_baseline_android_24)
-                        .setContentTitle(notification.getTitle())
-                        .setContentText(notification.getBody())
-                        .setAutoCancel(true)
-                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                        .setContentIntent(pendingIntent);
-
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        String channelId = getString(R.string.default_notification_channel_id);
 
         // Support Version >= Android 8
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -64,7 +64,17 @@ public class NotificationService extends FirebaseMessagingService {
             notificationManager.createNotificationChannel(mChannel);
         }
 
-        // Show notification
+        // Build a Notification object
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.drawable.ic_baseline_android_24)
+                        .setContentTitle("Bon appétit !")
+                        .setContentText(monInfo)
+                        .setAutoCancel(false)
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setContentIntent(pendingIntent);
+
+        // Display notification
         notificationManager.notify(NOTIFICATION_TAG, NOTIFICATION_ID, notificationBuilder.build());
     }
 }

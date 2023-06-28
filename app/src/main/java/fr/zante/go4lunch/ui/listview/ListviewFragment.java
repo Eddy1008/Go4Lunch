@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,8 @@ public class ListviewFragment extends Fragment {
     private ListviewRecyclerViewAdapter adapter;
     private MembersViewModel membersViewModel;
 
+    private SearchView searchView;
+
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class ListviewFragment extends Fragment {
         getRestaurants();
         initList();
 
+        initSearch();
+
         return root;
     }
 
@@ -77,20 +82,16 @@ public class ListviewFragment extends Fragment {
     private void getSelectedRestaurantList() {
         membersViewModel.getSelectedRestaurants().observe(getViewLifecycleOwner(), selectedRestaurants -> {
             selectedRestaurantsList = new ArrayList<>(selectedRestaurants);
-            Log.d("TAG", "getSelectedRestaurantList: selectedRestaurantsList.size() = " + selectedRestaurantsList.size());
         });
     }
 
     private void getRestaurants() {
-        Log.d("TAG", "getRestaurants: 11111 ");
         membersViewModel.getRestaurants().observe(getViewLifecycleOwner(), restaurantJsons -> {
             restaurants = new ArrayList<>(restaurantJsons);
             restaurantsMembersNumber.clear();
-            Log.d("TAG", "getRestaurants: 222222 ");
             for (RestaurantJson restaurant : restaurants) {
                 int myRestaurantMemberNumber = 0;
                 for (int i=0; i<selectedRestaurantsList.size(); i++) {
-                    Log.d("TAG", "selectedRestaurant = " + selectedRestaurantsList.get(i).getName() + " nb " + selectedRestaurantsList.get(i).getMemberJoiningNumber());
                     if (restaurant.getPlace_id().equals(selectedRestaurantsList.get(i).getRestaurantId())) {
                         myRestaurantMemberNumber = selectedRestaurantsList.get(i).getMemberJoiningNumber();
                         break;
@@ -99,6 +100,40 @@ public class ListviewFragment extends Fragment {
                 restaurantsMembersNumber.add(myRestaurantMemberNumber);
             }
             adapter.updateRestaurants(restaurants, restaurantsMembersNumber);
+        });
+    }
+
+    private void initSearch() {
+        SearchView searchView = binding.listviewSearchView;
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                ArrayList<RestaurantJson> filteredList = new ArrayList<>();
+                for (RestaurantJson restaurantJson : restaurants) {
+                    if (restaurantJson.getName().toLowerCase().contains(s.toLowerCase())) {
+                        filteredList.add(restaurantJson);
+                    }
+                }
+                ArrayList<Integer> filteredListInteger = new ArrayList<>();
+                for (RestaurantJson restaurantJson : filteredList) {
+                    int myInt = 0;
+                    for (int i=0; i<selectedRestaurantsList.size(); i++) {
+                        if (restaurantJson.getPlace_id().equals(selectedRestaurantsList.get(i).getRestaurantId())) {
+                            myInt = selectedRestaurantsList.get(i).getMemberJoiningNumber();
+                            break;
+                        }
+                    }
+                    filteredListInteger.add(myInt);
+                }
+                adapter = new ListviewRecyclerViewAdapter(filteredList, myLat, myLng, userName, filteredListInteger);
+                recyclerView.setAdapter(adapter);
+                return false;
+            }
         });
     }
 

@@ -52,7 +52,6 @@ public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewIt
     public void updateRestaurants(final List<RestaurantJson> restaurants, List<Integer> integerList) {
         this.restaurants = restaurants;
         this.restaurantsMembersNumber = integerList;
-        Log.d("TAG", "updateRestaurants: " + restaurantsMembersNumber);
         this.notifyDataSetChanged();
     }
 }

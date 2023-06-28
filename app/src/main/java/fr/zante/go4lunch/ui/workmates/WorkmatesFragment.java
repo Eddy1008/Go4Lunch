@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -48,6 +49,8 @@ public class WorkmatesFragment extends Fragment {
         getMembers();
         initList();
 
+        initSearch();
+
         return root;
     }
 
@@ -56,6 +59,29 @@ public class WorkmatesFragment extends Fragment {
             this.members = new ArrayList<>(members);
             if (members != null) {
                 adapter.updateMembers(this.members);
+            }
+        });
+    }
+
+    private void initSearch() {
+        SearchView searchView = binding.workmatesSearchView;
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                ArrayList<Member> filteredMemberList = new ArrayList<>();
+                for (Member member : members) {
+                    if (member.getName().toLowerCase().contains(s.toLowerCase())) {
+                        filteredMemberList.add(member);
+                    }
+                }
+                adapter = new WorkmatesRecyclerViewAdapter(filteredMemberList, userName);
+                recyclerView.setAdapter(adapter);
+                return false;
             }
         });
     }
