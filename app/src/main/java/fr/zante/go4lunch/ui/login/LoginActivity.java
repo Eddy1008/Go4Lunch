@@ -198,7 +198,8 @@ public class LoginActivity extends AppCompatActivity {
                 firebaseUser.getEmail(),
                 String.valueOf(firebaseUser.getPhotoUrl()),
                 "",
-                ""
+                "",
+                false
         );
 
         LoginViewModel loginViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(LoginViewModel.class);

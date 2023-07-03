@@ -117,6 +117,14 @@ public class MembersRepository {
         myRef.child(member.getName()).child("selectedRestaurantName").setValue(member.getSelectedRestaurantName());
     }
 
+    /**
+     * @param member item to update in database
+     * update member notifications allowed status
+     */
+    public void updateNotificationsAllowed(Member member) {
+        myRef.child(member.getName()).child("notificationsAllowed").setValue(member.isNotificationsAllowed());
+    }
+
 
     // **************************************
     // ****** MEMBER LIKED RESTAURANTS ******

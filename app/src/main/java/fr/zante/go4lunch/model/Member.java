@@ -8,14 +8,16 @@ public class Member {
     private String avatarUrl;
     private String selectedRestaurantId;
     private String selectedRestaurantName;
+    private boolean isNotificationsAllowed;
 
-    public Member(String memberId, String name, String mail, String avatarUrl, String selectedRestaurantId, String selectedRestaurantName) {
+    public Member(String memberId, String name, String mail, String avatarUrl, String selectedRestaurantId, String selectedRestaurantName, boolean isNotificationsAllowed) {
         this.memberId = memberId;
         this.name = name;
         this.mail = mail;
         this.avatarUrl = avatarUrl;
         this.selectedRestaurantId = selectedRestaurantId;
         this.selectedRestaurantName = selectedRestaurantName;
+        this.isNotificationsAllowed = isNotificationsAllowed;
     }
 
     public Member() {}
@@ -61,4 +63,7 @@ public class Member {
     public void setSelectedRestaurantName(String selectedRestaurantName) {
         this.selectedRestaurantName = selectedRestaurantName;
     }
+
+    public boolean isNotificationsAllowed() { return isNotificationsAllowed; }
+    public void setNotificationsAllowed(boolean notificationsAllowed) { isNotificationsAllowed = notificationsAllowed; }
 }

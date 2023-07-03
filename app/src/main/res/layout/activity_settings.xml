@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ui.settings.SettingsActivity">
+    tools:context="ui.settings.SettingsActivity"
+    tools:ignore="UseSwitchCompatOrMaterialXml">
 
     <ImageView
         android:id="@+id/settings_previous_page_button"
@@ -17,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:tint="@color/black" />
 
+    <!--
     <TextView
         android:id="@+id/settings_textview_title"
         android:layout_width="match_parent"
@@ -28,5 +30,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+        -->
+
+    <Switch
+        android:id="@+id/settings_notification_switch_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginEnd="40dp"
+        android:text="@string/settings_notification_autorisation"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

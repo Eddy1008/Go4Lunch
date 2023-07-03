@@ -81,8 +81,10 @@ public class MainActivity extends AppCompatActivity {
             membersViewModel.initActiveMember(userName);
             membersViewModel.getActiveMember().observe(this, member -> {
                 activeMember = member;
+                /** TODO
                 createNotificationChannel();
                 getDailyNotification();
+                 */
             });
         }
 
@@ -194,6 +196,11 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
+
+
+
+
+    /** TODO
     private void createNotificationChannel() {
         // Support Version >= Android 8
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -265,4 +272,5 @@ public class MainActivity extends AppCompatActivity {
             Log.d("TAG", "getActiveMemberSelectedRestaurantMembersInfo: my info = " + myInfo);
         });
     }
+     */
 }

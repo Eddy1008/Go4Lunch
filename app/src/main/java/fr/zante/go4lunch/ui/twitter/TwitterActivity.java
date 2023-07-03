@@ -86,7 +86,8 @@ public class TwitterActivity extends MainActivity {
                 firebaseUser.getEmail(),
                 String.valueOf(firebaseUser.getPhotoUrl()),
                 "",
-                ""
+                "",
+                false
         );
 
         TwitterViewModel twitterViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(TwitterViewModel.class);

@@ -139,7 +139,8 @@ public class RegisterActivity extends AppCompatActivity {
                 firebaseUser.getEmail(),
                 String.valueOf(firebaseUser.getPhotoUrl()),
                 "",
-                ""
+                "",
+                false
         );
 
         RegisterViewModel registerViewModel = new ViewModelProvider(this, ViewModelFactory.getInstance()).get(RegisterViewModel.class);

@@ -37,4 +37,6 @@
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="title_activity_register">register</string>
     <string name="title_activity_twitter">Twitter</string>
+
+    <string name="settings_notification_autorisation">Recevoir les notifications </string>
 </resources>
