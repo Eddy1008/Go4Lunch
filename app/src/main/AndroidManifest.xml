@@ -73,7 +73,9 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <receiver android:name=".notification.AlarmReceiver" />
+        <receiver
+            android:name=".notification.AlarmReceiver"
+            android:exported="true"/>
     </application>
 
 </manifest>
