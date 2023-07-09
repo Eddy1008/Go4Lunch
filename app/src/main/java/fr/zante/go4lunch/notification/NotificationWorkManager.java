@@ -1,15 +1,11 @@
 package fr.zante.go4lunch.notification;
 
 import android.content.Context;
-import android.net.wifi.WifiManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -39,11 +35,8 @@ public class NotificationWorkManager extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        Log.d("TAG", "doWork:");
         try {
-            Log.d("TAG", "NOTIFICATION_WORK_MANAGER : doWork: appel de la méthode getActiveMemberFromFirebase() ");
             getActiveMemberFromFirebase();
-
             return Result.success();
         } catch (Exception e) {
             Log.d("TAG", "doWork: exception = " + e.getMessage());
@@ -52,7 +45,6 @@ public class NotificationWorkManager extends Worker {
     }
 
     private void showNotification(String toDisplayInNotification) {
-        Log.d("TAG", "showNotification: AFFICHE LA NOTIF AVEC LES INFOS RECUES : " + toDisplayInNotification);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "myNotificationChannel")
                 .setContentTitle("Bon appétit")
                 .setContentText(toDisplayInNotification)
@@ -72,23 +64,17 @@ public class NotificationWorkManager extends Worker {
         DatabaseReference myRef = database.getReference("members");
 
         if (firebaseUser != null) {
-            Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getActiveMemberFromFirebase: recupération du firebaseUser != NULL : \n user = " + firebaseUser.getDisplayName());
-            myRef.addValueEventListener(new ValueEventListener() {
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot data: snapshot.getChildren()) {
                         Member member = data.getValue(Member.class);
-                        Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getActiveMemberFromFirebase : onDataChange: member.getName() = " + member.getName());
                         if (member != null) {
                             if (member.getName().equals(firebaseUser.getDisplayName())) {
                                 activeMember = member;
                             }
                         }
                     }
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getActiveMemberFromFirebase : onDataChange : Enregistrement de l'activeMember = " + activeMember.getName());
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getActiveMemberFromFirebase : onDataChange : appel de la méthode getDataFromFirebase() avec les parametres : " +
-                            "\n activeMember.getSelectedRestaurantId() = " + activeMember.getSelectedRestaurantId() +
-                            "\n activeMember.getMemberId() = " + activeMember.getMemberId() );
                     getDataFromFirebase(activeMember.getSelectedRestaurantId(), activeMember.getMemberId());
                 }
 
@@ -98,46 +84,32 @@ public class NotificationWorkManager extends Worker {
                 }
             });
         } else {
-            Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getActiveMemberFromFirebase: recupération du firebaseUser : \n user = NULL ");
+            Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getActiveMemberFromFirebase: firebaseUser = NULL ");
         }
     }
 
     private void getDataFromFirebase(String selectedRestaurantId, String activeMemberId) {
-        Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase: parametre reçus : " +
-                "\n String selectedRestaurantId = " + selectedRestaurantId +
-                "\n String activeMemberId = " + activeMemberId );
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference mySelectedRestaurantMemberListRef = database.getReference("selectedRestaurants").child(selectedRestaurantId).child("restaurantSelectedBy");
 
         List<Member> myMembersList = new ArrayList<>();
-        Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase: création liste vide : myMembersList.size() = " + myMembersList.size());
-
-        firebaseData = "message vide normalement ...";
-        Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase: création string affiché dans notif : firebaseData = message vide normalement ... = " + firebaseData);
+        firebaseData = "";
 
         mySelectedRestaurantMemberListRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 myMembersList.clear();
-                Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : myMembersList.clear() = " + myMembersList.size());
                 for (DataSnapshot data: snapshot.getChildren()) {
                     Member member = data.getValue(Member.class);
                     if (member != null) {
-                        Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : membre ayant selectionné cerestaurant : member.getName() = " + member.getName());
                         myMembersList.add(member);
-                        Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : ajout de ce membre à la liste : myMembersList.size() = " + myMembersList.size());
                     }
                 }
                 if (myMembersList.size() == 0) {
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : myMembersList.size() = 0 ? " + myMembersList.size());
                     firebaseData = "Vous n'avez pas fait votre choix pour ce midi !";
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange :  message notif = " + firebaseData);
                 } else if (myMembersList.size() == 1) {
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : myMembersList.size() = 1 ? " + myMembersList.size());
                     firebaseData = "Vous mangerez seul ce midi !";
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange :  message notif = " + firebaseData);
                 } else {
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : myMembersList.size() = 2+ ? " + myMembersList.size());
                     String memberListString = "";
                     for (int i=0; i<myMembersList.size(); i++) {
                         if (memberListString.equals("")) {
@@ -150,11 +122,8 @@ public class NotificationWorkManager extends Worker {
                             }
                         }
                     }
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : liste des participants contenus dans message = " + memberListString);
                     firebaseData =" Ce midi, vous mangerez à " + myMembersList.size() + "! Toi et " + memberListString;
-                    Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange :  message notif = " + firebaseData);
                 }
-                Log.d("TAG", "NOTIFICATION_WORK_MANAGER : getDataFromFirebase : onDataChange : appel de la méthode showNotification() ");
                 showNotification(firebaseData);
             }
 
@@ -164,5 +133,4 @@ public class NotificationWorkManager extends Worker {
             }
         });
     }
-
 }

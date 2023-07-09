@@ -1,15 +1,9 @@
 package fr.zante.go4lunch.ui.settings;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.work.Data;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import fr.zante.go4lunch.data.MembersRepository;
 import fr.zante.go4lunch.model.Member;
@@ -20,6 +14,8 @@ public class SettingsViewModel extends ViewModel {
     // Repository
     private final MembersRepository repository;
     private NotificationRepository notificationRepository;
+
+    // DATA
     private LiveData<Member> activeMember;
 
     public SettingsViewModel(MembersRepository repository) {
@@ -40,12 +36,10 @@ public class SettingsViewModel extends ViewModel {
     }
 
     public void scheduleDailyNotification(Context context, long initialDelayMillis) {
-        Log.d("TAG", "SettingsViewModel : scheduleDailyNotification: Appel au repository pour planifier le WORKER ");
         notificationRepository.scheduleDailyNotificationWorker(context, initialDelayMillis);
     }
 
     public void cancelDailyNotification() {
-        Log.d("TAG", "SettingsViewModel : cancelDailyNotification: Appel au repository pour annuler le WORKER ");
         notificationRepository.cancelDailyNotificationWorker();
     }
 

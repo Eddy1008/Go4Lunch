@@ -1,7 +1,5 @@
 package fr.zante.go4lunch.ui;
 
-import android.util.Log;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
@@ -11,7 +9,6 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import fr.zante.go4lunch.data.GooglePlacesRepository;
 import fr.zante.go4lunch.data.MembersRepository;
@@ -31,6 +28,7 @@ public class MembersViewModel extends ViewModel {
     private MutableLiveData<List<RestaurantJson>> filteredListMutableLiveData = new MutableLiveData<>();
     private LiveData<Member> activeMember;
     private LiveData<List<SelectedRestaurant>> selectedRestaurantsData;
+    private String searchInfo;
 
     // Constructor
     public MembersViewModel(MembersRepository repository, GooglePlacesRepository googlePlaceRepository) {
@@ -71,21 +69,21 @@ public class MembersViewModel extends ViewModel {
     }
 
     public LiveData<List<RestaurantJson>> getRestaurants() {
-        String s = "";
-        getFilteredRestaurants(s);
+        getFilteredRestaurants(searchInfo);
         return this.filteredListMutableLiveData;
     }
 
     public void getFilteredRestaurants(String s) {
+        searchInfo = s;
         restaurantsData.observeForever(new Observer<List<RestaurantJson>>() {
             @Override
             public void onChanged(List<RestaurantJson> restaurantJsons) {
-                if (s == null || s.trim().isEmpty()) {
+                if (searchInfo == null || searchInfo.trim().isEmpty()) {
                     filteredListMutableLiveData.setValue(restaurantJsons);
                 } else {
                     List<RestaurantJson> filteredList = new ArrayList<>();
                     for (RestaurantJson restaurantJson: restaurantJsons) {
-                        if (restaurantJson.getName().toLowerCase().contains(s.toLowerCase())) {
+                        if (restaurantJson.getName().toLowerCase().contains(searchInfo.toLowerCase())) {
                             filteredList.add(restaurantJson);
                         }
                     }

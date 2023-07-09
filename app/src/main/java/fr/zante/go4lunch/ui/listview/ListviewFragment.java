@@ -1,11 +1,9 @@
 package fr.zante.go4lunch.ui.listview;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.zante.go4lunch.databinding.FragmentListviewBinding;
-import fr.zante.go4lunch.model.Member;
 import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.SelectedRestaurant;
 import fr.zante.go4lunch.ui.MembersViewModel;
