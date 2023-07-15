@@ -11,14 +11,15 @@
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/item_workmates_joining_photo" />
 
     <TextView
         android:id="@+id/item_workmates_joining_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Eddy is joining !"
+        android:text="@string/item_workmates_joining_text"
         app:layout_constraintTop_toTopOf="@+id/item_workmates_joining_photo"
         app:layout_constraintBottom_toBottomOf="@+id/item_workmates_joining_photo"
         app:layout_constraintStart_toEndOf="@+id/item_workmates_joining_photo"/>

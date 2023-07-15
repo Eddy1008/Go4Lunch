@@ -14,7 +14,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@color/black" />
+        android:background="@color/black"
+        android:contentDescription="@string/activity_restaurant_photo" />
 
     <ImageView
         android:id="@+id/restaurant_detail_previous_page_button"
@@ -24,7 +25,9 @@
         app:layout_constraintStart_toStartOf="@+id/restaurant_detail_photo"
         android:layout_margin="16dp"
         android:clickable="true"
-        android:src="@drawable/ic_baseline_arrow_back_24"/>
+        android:focusable="true"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        android:contentDescription="@string/activity_restaurant_previous_page" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/restaurant_detail_cardview_address"
@@ -39,7 +42,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="8dp" >
+            android:layout_margin="12dp" >
 
             <TextView
                 android:id="@+id/restaurant_detail_name"
@@ -47,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textSize="20sp"
-                android:text="Nom"
+                android:text="@string/activity_restaurant_name"
                 android:textColor="@color/white"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +65,8 @@
                 app:layout_constraintTop_toTopOf="@id/restaurant_detail_name"
                 app:layout_constraintStart_toEndOf="@id/restaurant_detail_name"
                 app:layout_constraintBottom_toBottomOf="@id/restaurant_detail_name"
-                android:src="@drawable/ic_baseline_star_rate_24"/>
+                android:src="@drawable/ic_baseline_star_rate_24"
+                android:contentDescription="@string/activity_restaurant_first_star" />
 
             <ImageView
                 android:id="@+id/restaurant_detail_star_two"
@@ -72,7 +76,8 @@
                 app:layout_constraintTop_toTopOf="@id/restaurant_detail_name"
                 app:layout_constraintStart_toEndOf="@id/restaurant_detail_star_one"
                 app:layout_constraintBottom_toBottomOf="@id/restaurant_detail_name"
-                android:src="@drawable/ic_baseline_star_rate_24"/>
+                android:src="@drawable/ic_baseline_star_rate_24"
+                android:contentDescription="@string/activity_restaurant_second_star" />
 
             <ImageView
                 android:id="@+id/restaurant_detail_star_three"
@@ -82,13 +87,14 @@
                 app:layout_constraintTop_toTopOf="@id/restaurant_detail_name"
                 app:layout_constraintStart_toEndOf="@id/restaurant_detail_star_two"
                 app:layout_constraintBottom_toBottomOf="@id/restaurant_detail_name"
-                android:src="@drawable/ic_baseline_star_rate_24"/>
+                android:src="@drawable/ic_baseline_star_rate_24"
+                android:contentDescription="@string/activity_restaurant_third_star" />
 
             <TextView
                 android:id="@+id/restaurant_detail_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Restaurant français - 123 rue sans faim"
+                android:text="@string/activity_restaurant_address"
                 android:textColor="@color/white"
                 app:layout_constraintTop_toBottomOf="@id/restaurant_detail_name"
                 app:layout_constraintStart_toStartOf="parent"
@@ -110,7 +116,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_margin="12dp">
 
             <LinearLayout
                 android:id="@+id/restaurant_detail_linearLayout_phone"
@@ -119,6 +125,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/restaurant_detail_linearLayout_like"
                 app:layout_constraintStart_toStartOf="parent"
@@ -128,12 +135,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:src="@drawable/ic_baseline_phone_24" />
+                    android:src="@drawable/ic_baseline_phone_24"
+                    android:contentDescription="@string/activity_restaurant_phone_logo" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="CALL"
+                    android:text="@string/activity_restaurant_phone"
                     android:textColor="@color/orange"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -145,6 +153,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -154,12 +163,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:src="@drawable/ic_baseline_star_24" />
+                    android:src="@drawable/ic_baseline_star_24"
+                    android:contentDescription="@string/activity_restaurant_like_logo"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="LIKE"
+                    android:text="@string/activity_restaurant_like"
                     android:textColor="@color/orange"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -172,6 +182,7 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:clickable="true"
+                android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/restaurant_detail_linearLayout_like"
@@ -181,12 +192,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:src="@drawable/ic_baseline_public_24" />
+                    android:src="@drawable/ic_baseline_public_24"
+                    android:contentDescription="@string/activity_restaurant_website_logo" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
-                    android:text="WEBSITE"
+                    android:text="@string/activity_restaurant_website"
                     android:textColor="@color/orange"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -212,10 +224,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:clickable="true"
+        android:focusable="true"
         android:backgroundTint="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/restaurant_detail_photo"
         app:layout_constraintTop_toBottomOf="@+id/restaurant_detail_photo"
         app:layout_constraintEnd_toEndOf="parent"
-        android:src="@drawable/ic_baseline_check_circle_outline_24"/>
+        android:src="@drawable/ic_baseline_check_circle_outline_24"
+        android:contentDescription="@string/activity_restaurant_fab" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

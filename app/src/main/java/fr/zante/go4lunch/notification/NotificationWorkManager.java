@@ -1,5 +1,6 @@
 package fr.zante.go4lunch.notification;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 
@@ -44,9 +45,10 @@ public class NotificationWorkManager extends Worker {
         }
     }
 
+    @SuppressLint("MissingPermission")
     private void showNotification(String toDisplayInNotification) {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "myNotificationChannel")
-                .setContentTitle("Bon appétit")
+                .setContentTitle(getApplicationContext().getString(R.string.notification_work_manager_title))
                 .setContentText(toDisplayInNotification)
                 .setSmallIcon(R.drawable.ic_baseline_android_24)
                 .setAutoCancel(true)
@@ -106,9 +108,9 @@ public class NotificationWorkManager extends Worker {
                     }
                 }
                 if (myMembersList.size() == 0) {
-                    firebaseData = "Vous n'avez pas fait votre choix pour ce midi !";
+                    firebaseData = getApplicationContext().getString(R.string.notification_work_manager_no_choice);
                 } else if (myMembersList.size() == 1) {
-                    firebaseData = "Vous mangerez seul ce midi !";
+                    firebaseData = getApplicationContext().getString(R.string.notification_work_manager_alone);
                 } else {
                     String memberListString = "";
                     for (int i=0; i<myMembersList.size(); i++) {
@@ -122,7 +124,13 @@ public class NotificationWorkManager extends Worker {
                             }
                         }
                     }
-                    firebaseData =" Ce midi, vous mangerez à " + myMembersList.size() + "! Toi et " + memberListString;
+                    firebaseData = getApplicationContext().getString(R.string.notification_work_manager_workmates_part_one)
+                            + " "
+                            + myMembersList.size()
+                            + " "
+                            + getApplicationContext().getString(R.string.notification_work_manager_workmates_part_two)
+                            + " "
+                            + memberListString;
                 }
                 showNotification(firebaseData);
             }

@@ -15,8 +15,8 @@ import fr.zante.go4lunch.model.Member;
 
 public class RestaurantDetailItemViewHolder extends RecyclerView.ViewHolder{
 
-    private ImageView memberPhoto;
-    private TextView info;
+    private final ImageView memberPhoto;
+    private final TextView info;
 
     public RestaurantDetailItemViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -25,11 +25,11 @@ public class RestaurantDetailItemViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void bind(Member member) {
-        String stringToDisplay = member.getName() + " is joining!";
         Glide.with(this.memberPhoto.getContext())
                 .load(member.getAvatarUrl())
                 .apply(RequestOptions.circleCropTransform())
                 .into(memberPhoto);
+        String stringToDisplay = member.getName() + " " + itemView.getContext().getString(R.string.restaurant_detail_item_view_holder_info);
         info.setText(stringToDisplay);
     }
 }

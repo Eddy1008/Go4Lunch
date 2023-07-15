@@ -5,7 +5,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +16,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -26,6 +24,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+
+import java.util.Objects;
 
 import fr.zante.go4lunch.MainActivity;
 import fr.zante.go4lunch.R;
@@ -62,11 +62,19 @@ public class LoginActivity extends AppCompatActivity {
         googleSigninClient = GoogleSignIn.getClient(this, gso);
         firebaseAuth = FirebaseAuth.getInstance();
 
-        // Register redirection
-        binding.signInTextviewNewAccount.setOnClickListener(new View.OnClickListener() {
+        // CUSTOM SIGN IN
+        binding.signInButtonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                String email = binding.signInEdittextName.getText().toString();
+                String password = binding.signInEdittextPassword.getText().toString();
+                if (email.isEmpty()) {
+                    binding.signInEdittextName.setError(getString(R.string.login_activity_mail_error));
+                } else if (password.isEmpty() || password.length()<6) {
+                    binding.signInEdittextPassword.setError(getString(R.string.login_activity_password_error));
+                } else {
+                    signInWithEmailAndPassword(email, password);
+                }
             }
         });
 
@@ -75,23 +83,15 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // TODO FORGET PASSWORD BUTTON
-                Toast.makeText(LoginActivity.this, "Upcoming feature !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.login_activity_upcoming_feature), Toast.LENGTH_SHORT).show();
             }
         });
 
-        // CUSTOM SIGN IN
-        binding.signInButtonLogin.setOnClickListener(new View.OnClickListener() {
+        // Register redirection
+        binding.signInTextviewNewAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = binding.signInEdittextName.getText().toString();
-                String password = binding.signInEdittextPassword.getText().toString();
-                if (email.isEmpty()) {
-                    binding.signInEdittextName.setError("Invalid email format");
-                } else if (password.isEmpty() || password.length()<6) {
-                    binding.signInEdittextPassword.setError("Password must contain at least 6 characters");
-                } else {
-                    signInWithEmailAndPassword(email, password);
-                }
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
             }
         });
 
@@ -118,8 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         binding.signInButtonFacebook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO FACEBOOK SIGN IN
-                Toast.makeText(LoginActivity.this, "Will allow you to connect with Facebook", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, getString(R.string.login_activity_upcoming_feature), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -144,17 +143,17 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        // login success
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                        String userEmail = firebaseUser.getEmail();
-                        // Check if new user:
-                        if (authResult.getAdditionalUserInfo().isNewUser()) {
-                            // new user, account created:
-                            addMemberToDatabase(firebaseUser);
-                            Toast.makeText(LoginActivity.this, "Account created ... \n" + userEmail, Toast.LENGTH_SHORT).show();
-                        } else {
-                            // existing user logged in
-                            Toast.makeText(LoginActivity.this, "Welcome back ... \n" + userEmail, Toast.LENGTH_SHORT).show();
+                        if (firebaseUser != null) {
+                            // Check if new user:
+                            if (Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()) {
+                                // new user, account created:
+                                addMemberToDatabase(firebaseUser);
+                                Toast.makeText(LoginActivity.this, getString(R.string.login_activity_new_account_google) + "\n" + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                // existing user logged in
+                                Toast.makeText(LoginActivity.this, getString(R.string.login_activity_welcome_back) + "\n" + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+                            }
                         }
                         // Start MainActivity
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -174,11 +173,11 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                     @Override
                     public void onSuccess(AuthResult authResult) {
-                        // Connexion réussie avec e-mail et mot de passe
                         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-                        String userEmail = firebaseUser.getEmail();
-                        Toast.makeText(LoginActivity.this, "Bienvenue...\n" + userEmail, Toast.LENGTH_SHORT).show();
-                        // Démarrer MainActivity
+                        if (firebaseUser != null) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.login_activity_welcome_back) + "\n" + firebaseUser.getEmail(), Toast.LENGTH_SHORT).show();
+                        }
+                        // Start MainActivity
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         finish();
                     }
@@ -186,7 +185,7 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e(TAG, "onFailure: Échec de la connexion " + e.getMessage());
+                        Log.e(TAG, "onFailure: connexion failed " + e.getMessage());
                     }
                 });
     }

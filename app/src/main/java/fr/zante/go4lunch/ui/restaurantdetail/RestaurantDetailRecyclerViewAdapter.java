@@ -15,7 +15,7 @@ import fr.zante.go4lunch.model.Member;
 
 public class RestaurantDetailRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantDetailItemViewHolder>{
 
-    private List<Member> members;
+    private final List<Member> members;
 
     public RestaurantDetailRecyclerViewAdapter(List<Member> members) {
         this.members = members;

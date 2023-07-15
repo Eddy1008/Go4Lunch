@@ -27,11 +27,10 @@ public class ListviewFragment extends Fragment {
 
     private double myLat = 0;
     private double myLng = 0;
-    private String userName;
 
     private List<RestaurantJson> restaurants = new ArrayList<>();
     private List<SelectedRestaurant> selectedRestaurantsList = new ArrayList<>();
-    private List<Integer> restaurantsMembersNumber = new ArrayList<>();
+    private final List<Integer> restaurantsMembersNumber = new ArrayList<>();
     private RecyclerView recyclerView;
     private ListviewRecyclerViewAdapter adapter;
     private MembersViewModel membersViewModel;
@@ -49,8 +48,8 @@ public class ListviewFragment extends Fragment {
         this.membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
         myLat = membersViewModel.getMyLat();
         myLng = membersViewModel.getMyLng();
-        userName = membersViewModel.getMyUserName();
-        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, this.userName, this.restaurantsMembersNumber);
+        String userName = membersViewModel.getMyUserName();
+        adapter = new ListviewRecyclerViewAdapter(this.restaurants, this.myLat, this.myLng, userName, this.restaurantsMembersNumber);
 
         getSelectedRestaurantList();
         configureViewModel();

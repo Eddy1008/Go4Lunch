@@ -1,7 +1,6 @@
 package fr.zante.go4lunch.ui.listview;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +17,9 @@ public class ListviewRecyclerViewAdapter extends RecyclerView.Adapter<ListviewIt
 
     private List<RestaurantJson> restaurants;
     private List<Integer> restaurantsMembersNumber;
-    private double myLat;
-    private double myLng;
-    private String userName;
+    private final double myLat;
+    private final double myLng;
+    private final String userName;
 
     public ListviewRecyclerViewAdapter(List<RestaurantJson> items, double lat, double lng, String name, List<Integer> integerList) {
         restaurants = items;

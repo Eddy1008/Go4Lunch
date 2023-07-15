@@ -2,6 +2,7 @@ package fr.zante.go4lunch.ui.twitter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -14,6 +15,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.OAuthProvider;
+
+import java.util.Objects;
 
 import fr.zante.go4lunch.MainActivity;
 import fr.zante.go4lunch.model.Member;
@@ -35,45 +38,43 @@ public class TwitterActivity extends MainActivity {
 
         Task<AuthResult> pendingResultTask = firebaseAuth.getPendingAuthResult();
         if (pendingResultTask != null) {
-            // There's something already here! Finish the sign-in for your user.
             pendingResultTask
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             startActivity(new Intent(TwitterActivity.this, MainActivity.class));
-                            Toast.makeText(TwitterActivity.this, "TWITTER AAA", Toast.LENGTH_SHORT).show();
-                            if (authResult.getAdditionalUserInfo().isNewUser()) {
+                            if (Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()) {
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                                addMemberToDatabase(user);
+                                if (user != null) {
+                                    addMemberToDatabase(user);
+                                }
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(TwitterActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("TAG", "onFailure: ", e);
                         }
                     });
         } else {
-            // There's no pending result so you need to start the sign-in flow.
-            // See below.
-            firebaseAuth.startActivityForSignInWithProvider(/* activity= */ this, provider.build())
+            firebaseAuth.startActivityForSignInWithProvider(this, provider.build())
                     .addOnSuccessListener(new OnSuccessListener<AuthResult>() {
                         @Override
                         public void onSuccess(AuthResult authResult) {
                             startActivity(new Intent(TwitterActivity.this, MainActivity.class));
-                            Toast.makeText(TwitterActivity.this, "TWITTER BBB", Toast.LENGTH_SHORT).show();
-                            if (authResult.getAdditionalUserInfo().isNewUser()) {
+                            if (Objects.requireNonNull(authResult.getAdditionalUserInfo()).isNewUser()) {
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
-                                addMemberToDatabase(user);
+                                if (user != null) {
+                                    addMemberToDatabase(user);
+                                }
                             }
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            // Handle failure.
-                            Toast.makeText(TwitterActivity.this, "" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Log.e("TAG", "onFailure: ", e);
                         }
                     });
         }

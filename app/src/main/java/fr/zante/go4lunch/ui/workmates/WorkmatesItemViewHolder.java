@@ -1,8 +1,9 @@
 package fr.zante.go4lunch.ui.workmates;
 
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,8 +21,8 @@ import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 
 public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
 
-    private ImageView memberPhoto;
-    private TextView info;
+    private final ImageView memberPhoto;
+    private final TextView info;
 
     public WorkmatesItemViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -30,18 +31,22 @@ public class WorkmatesItemViewHolder extends RecyclerView.ViewHolder{
     }
 
     public void bind(Member member, String userName) {
-        String toDisplay = "";
+        String toDisplay;
         if (member.getSelectedRestaurantName().equals("")) {
-            toDisplay = member.getName() + " hasn't decided yet ";
+            info.setTypeface(null, Typeface.ITALIC);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                info.setTextColor(itemView.getContext().getColor(R.color.light_gray));
+            }
+            toDisplay = member.getName() + " " + itemView.getContext().getString(R.string.workmates_item_view_holder_no_choice);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(view.getContext(), "ce collegue n'a pas encore fait son choix !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(view.getContext(), itemView.getContext().getString(R.string.workmates_item_view_holder_no_choice_toast), Toast.LENGTH_SHORT).show();
                 }
             });
         } else {
-            Log.d("TAG", "bind: : deja choisi son restaurant : getSelectedRestaurantName = " + member.getSelectedRestaurantName());
-            toDisplay = member.getName() + " is eating here: " + member.getSelectedRestaurantName();
+            info.setTypeface(null, Typeface.BOLD);
+            toDisplay = member.getName() + " " + itemView.getContext().getString(R.string.workmates_item_view_holder_choice_made) + " " + member.getSelectedRestaurantName();
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

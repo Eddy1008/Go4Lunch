@@ -27,10 +27,10 @@ public class MembersRepository {
     DatabaseReference myRef = database.getReference("members");
     DatabaseReference mySelectedRestaurantsRef = database.getReference("selectedRestaurants");
 
-    private List<Member> myMembersList = new ArrayList<>();
-    private List<String> myActiveMemberLikeList = new ArrayList<>();
-    private List<SelectedRestaurant> mySelectedRestaurantsList = new ArrayList<>();
-    private List<Member> mySelectedRestaurantMemberList = new ArrayList<>();
+    private final List<Member> myMembersList = new ArrayList<>();
+    private final List<String> myActiveMemberLikeList = new ArrayList<>();
+    private final List<SelectedRestaurant> mySelectedRestaurantsList = new ArrayList<>();
+    private final List<Member> mySelectedRestaurantMemberList = new ArrayList<>();
 
     private static MembersRepository repository;
 

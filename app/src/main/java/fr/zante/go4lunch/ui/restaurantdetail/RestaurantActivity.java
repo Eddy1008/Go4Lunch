@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,7 +28,6 @@ import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
 import fr.zante.go4lunch.databinding.ActivityRestaurantBinding;
 import fr.zante.go4lunch.model.Member;
-import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.SelectedRestaurant;
 import fr.zante.go4lunch.ui.ViewModelFactory;
 
@@ -62,6 +60,7 @@ public class RestaurantActivity extends AppCompatActivity {
         firstStar = binding.restaurantDetailStarOne;
         secondStar = binding.restaurantDetailStarTwo;
         thirdStar = binding.restaurantDetailStarThree;
+        setPreviousPageButton();
 
         getInfoFromIntent();
 
@@ -78,8 +77,6 @@ public class RestaurantActivity extends AppCompatActivity {
         restaurantDetailViewModel.initSelectedRestaurantsList();
         restaurantDetailViewModel.getSelectedRestaurants().observe(this, selectedRestaurants -> {
             this.selectedRestaurantList = new ArrayList<>(selectedRestaurants);
-            if (selectedRestaurants != null) {
-            }
         });
 
         restaurantDetailViewModel.initSelectedRestaurantMembersList(restaurantId);
@@ -87,7 +84,6 @@ public class RestaurantActivity extends AppCompatActivity {
             membersJoiningList = new ArrayList<>(members);
         });
 
-        setPreviousPageButton();
         getRestaurantDataFromBundle();
         setRecyclerView();
     }
@@ -102,19 +98,18 @@ public class RestaurantActivity extends AppCompatActivity {
     void getRestaurantDataFromBundle() {
         this.restaurantDetailViewModel.initSelectedRestaurantById(this.restaurantId);
         this.restaurantDetailViewModel.getRestaurantById().observe(this, restaurantJson -> {
-            RestaurantJson detailedRestaurant = restaurantJson;
-            binding.restaurantDetailName.setText(detailedRestaurant.getName());
-            binding.restaurantDetailAddress.setText(detailedRestaurant.getVicinity());
-            if (detailedRestaurant.getPhotos() != null) {
+            binding.restaurantDetailName.setText(restaurantJson.getName());
+            binding.restaurantDetailAddress.setText(restaurantJson.getVicinity());
+            if (restaurantJson.getPhotos() != null) {
                 String myBasePhotoURL = "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=";
                 String apiKey = "&key=" + BuildConfig.MAPS_API_KEY;
-                String myPhotoURL = myBasePhotoURL + detailedRestaurant.getPhotos().get(0).getPhoto_reference() + apiKey;
+                String myPhotoURL = myBasePhotoURL + restaurantJson.getPhotos().get(0).getPhoto_reference() + apiKey;
                 Glide.with(this.getApplicationContext())
                         .load(myPhotoURL)
                         .into(binding.restaurantDetailPhoto);
             }
 
-            float myIntRating = detailedRestaurant.getRating() * 3 / 5;
+            float myIntRating = restaurantJson.getRating() * 3 / 5;
             if (myIntRating > 2.6) {
                 firstStar.setVisibility(View.VISIBLE);
                 secondStar.setVisibility(View.VISIBLE);
@@ -138,7 +133,7 @@ public class RestaurantActivity extends AppCompatActivity {
             binding.restaurantDetailFab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    updateMemberSelectedRestaurant(detailedRestaurant.getPlace_id(), detailedRestaurant.getName());
+                    updateMemberSelectedRestaurant(restaurantJson.getPlace_id(), restaurantJson.getName());
                 }
             });
 
@@ -147,7 +142,7 @@ public class RestaurantActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(Intent.ACTION_CALL);
-                    intent.setData(Uri.parse("tel:" + detailedRestaurant.getFormatted_phone_number()));
+                    intent.setData(Uri.parse("tel:" + restaurantJson.getFormatted_phone_number()));
                     if (ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
                         startActivity(intent);
                     } else {
@@ -168,12 +163,12 @@ public class RestaurantActivity extends AppCompatActivity {
             });
 
             // Set the Website button
-            if (detailedRestaurant.getWebsite() != null) {
+            if (restaurantJson.getWebsite() != null) {
                 binding.restaurantDetailLinearLayoutWebsite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         Intent intentWebsite = new Intent(Intent.ACTION_VIEW);
-                        intentWebsite.setData(Uri.parse(detailedRestaurant.getWebsite()));
+                        intentWebsite.setData(Uri.parse(restaurantJson.getWebsite()));
                         startActivity(intentWebsite);
                     }
                 });

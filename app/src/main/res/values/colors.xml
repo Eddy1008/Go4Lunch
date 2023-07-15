@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF5722</color>
     <color name="navigation_view_background">#C66B4F</color>
+    <color name="light_gray">#80777777</color>
+
 </resources>

@@ -1,5 +1,6 @@
 package fr.zante.go4lunch.data;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -22,7 +23,7 @@ public class GooglePlacesRepository {
     }
 
     public LiveData<List<RestaurantJson>> getRestaurantLiveData(double lat, double lng) {
-        MutableLiveData<List<RestaurantJson>> restaurantJsonsMutableLiveData = new MutableLiveData<>();
+        MutableLiveData<List<RestaurantJson>> restaurantJSonsMutableLiveData = new MutableLiveData<>();
 
         String myNewLocationWithLatLng = lat + "," + lng;
         String myResearchRadius = "900";
@@ -33,19 +34,19 @@ public class GooglePlacesRepository {
         googlePlacesAPi.getNearbyPlaces(myNewLocationWithLatLng, myResearchRadius, myResearchType, myResearchFields, apiKey)
                 .enqueue(new Callback<RestaurantsResult>() {
                     @Override
-                    public void onResponse(Call<RestaurantsResult> call, Response<RestaurantsResult> response) {
+                    public void onResponse(@NonNull Call<RestaurantsResult> call, @NonNull Response<RestaurantsResult> response) {
                         if (response.body() != null) {
-                            restaurantJsonsMutableLiveData.setValue(response.body().getRestaurants());
+                            restaurantJSonsMutableLiveData.setValue(response.body().getRestaurants());
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<RestaurantsResult> call, Throwable t) {
-                        restaurantJsonsMutableLiveData.setValue(null);
+                    public void onFailure(@NonNull Call<RestaurantsResult> call, @NonNull Throwable t) {
+                        restaurantJSonsMutableLiveData.setValue(null);
                     }
                 });
 
-        return restaurantJsonsMutableLiveData;
+        return restaurantJSonsMutableLiveData;
     }
 
     public LiveData<RestaurantJson> getRestaurantLiveDataById(String myPlaceId) {
@@ -56,14 +57,14 @@ public class GooglePlacesRepository {
 
         googlePlacesAPi.getPlaceInfoById(myPlaceId, myFields, apiKey).enqueue(new Callback<RestaurantResultById>() {
             @Override
-            public void onResponse(Call<RestaurantResultById> call, Response<RestaurantResultById> response) {
+            public void onResponse(@NonNull Call<RestaurantResultById> call, @NonNull Response<RestaurantResultById> response) {
                 if (response.body() != null) {
                     restaurantJsonByIdMutableLiveData.setValue(response.body().getResult());
                 }
             }
 
             @Override
-            public void onFailure(Call<RestaurantResultById> call, Throwable t) {
+            public void onFailure(@NonNull Call<RestaurantResultById> call, @NonNull Throwable t) {
                 restaurantJsonByIdMutableLiveData.setValue(null);
             }
         });

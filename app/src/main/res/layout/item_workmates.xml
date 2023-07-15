@@ -12,14 +12,15 @@
         android:layout_margin="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="@string/item_workmates_photo" />
 
     <TextView
         android:id="@+id/item_workmates_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Eddy make a choice: "
+        android:text="@string/item_workmates_info"
         app:layout_constraintTop_toTopOf="@+id/item_workmates_photo"
         app:layout_constraintBottom_toBottomOf="@+id/item_workmates_photo"
         app:layout_constraintStart_toEndOf="@+id/item_workmates_photo"/>

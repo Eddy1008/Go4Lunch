@@ -19,18 +19,16 @@ import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 
 public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
 
-    private TextView name;
-    private TextView address;
-    private TextView opening_info;
-    private TextView distance;
-    private TextView subscription_number;
-
-    private ImageView joiningMembers;
-    private ImageView firstStar;
-    private ImageView secondStar;
-    private ImageView thirdStar;
-
-    private ImageView restaurant_photo;
+    private final TextView name;
+    private final TextView address;
+    private final TextView opening_info;
+    private final TextView distance;
+    private final TextView subscription_number;
+    private final ImageView joiningMembers;
+    private final ImageView firstStar;
+    private final ImageView secondStar;
+    private final ImageView thirdStar;
+    private final ImageView restaurant_photo;
 
     public ListviewItemViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -59,12 +57,12 @@ public class ListviewItemViewHolder extends RecyclerView.ViewHolder {
         name.setText(restaurant.getName());
         address.setText(restaurant.getVicinity());
         if (restaurant.getOpening_hours() == null) {
-            opening_info.setText("non renseigné");
+            opening_info.setText(R.string.listview_opening_info_unknown);
         } else {
             if (restaurant.getOpening_hours().isOpen_now()) {
-                opening_info.setText("Ouvert");
+                opening_info.setText(R.string.listview_opening_info_open);
             } else {
-                opening_info.setText("Fermé");
+                opening_info.setText(R.string.listview_opening_info_closed);
             }
         }
         int myDistanceToRestaurant = (int) getDistanceToRestaurant(restaurant, lat, lng);

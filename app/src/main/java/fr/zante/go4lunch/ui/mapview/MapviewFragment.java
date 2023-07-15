@@ -1,5 +1,6 @@
 package fr.zante.go4lunch.ui.mapview;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -31,10 +31,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import fr.zante.go4lunch.BuildConfig;
 import fr.zante.go4lunch.R;
@@ -48,28 +48,22 @@ import fr.zante.go4lunch.ui.restaurantdetail.RestaurantActivity;
 public class MapviewFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap map;
-    private FragmentMapviewBinding binding;
 
-    // List of displayed restaurants:
-    private List<RestaurantJson> restaurants = new ArrayList<>();
-
+    // DATA
     private MembersViewModel membersViewModel;
+    private List<RestaurantJson> restaurants = new ArrayList<>();
     private List<SelectedRestaurant> selectedRestaurantsList = new ArrayList<>();
-
     private LatLng myLatLng;
-
-    private List<Marker> markers = new ArrayList<>();
-
-    private PlacesClient placesClient;
+    private final List<Marker> markers = new ArrayList<>();
     private FusedLocationProviderClient fusedLocationProviderClient;
-
-    // A default location
+    // Default location
     private final LatLng defaultLocation = new LatLng(50.6292, 3.0573);
+    // Default zoom
     private static final int DEFAULT_ZOOM = 14;
     private boolean locationPermissionGranted;
     private Location lastKnownLocation;
 
-    private ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             new ActivityResultCallback<Boolean>() {
                 @Override
@@ -94,8 +88,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                              @Nullable Bundle savedInstanceState) {
 
         // PlacesClient
-        Places.initialize(getActivity().getApplicationContext(), BuildConfig.MAPS_API_KEY);
-        placesClient = Places.createClient(this.getActivity().getApplicationContext());
+        Places.initialize(Objects.requireNonNull(getActivity()).getApplicationContext(), BuildConfig.MAPS_API_KEY);
 
         // FusedLocationProviderClient.
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this.getActivity());
@@ -104,11 +97,13 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
         membersViewModel = new ViewModelProvider(requireActivity(), ViewModelFactory.getInstance()).get(MembersViewModel.class);
         membersViewModel.initSelectedRestaurantsList();
 
-        binding = FragmentMapviewBinding.inflate(inflater, container, false);
+        fr.zante.go4lunch.databinding.FragmentMapviewBinding binding = FragmentMapviewBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         binding.fabFindMe.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,7 +139,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     private void getDeviceLocation() {
         try {
             if (locationPermissionGranted) {
-                Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
+                @SuppressLint("MissingPermission") Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
                 locationResult.addOnCompleteListener(new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
@@ -178,6 +173,7 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
     /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
+    @SuppressLint("MissingPermission")
     private void updateLocationUI() {
         if (map == null) {
             return;
@@ -217,14 +213,18 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
                                         .title(restaurant.getName())
                                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                 );
-                        marker.setTag(restaurant.getPlace_id());
+                        if (marker != null) {
+                            marker.setTag(restaurant.getPlace_id());
+                        }
                         markers.add(marker);
                     } else {
                         Marker marker = map.addMarker(new MarkerOptions()
                                         .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
                                         .title(restaurant.getName())
                                 );
-                        marker.setTag(restaurant.getPlace_id());
+                        if (marker != null) {
+                            marker.setTag(restaurant.getPlace_id());
+                        }
                         markers.add(marker);
                     }
                 }
@@ -233,7 +233,6 @@ public class MapviewFragment extends Fragment implements OnMapReadyCallback {
             map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
                 public boolean onMarkerClick(@NonNull Marker marker) {
-                    Toast.makeText(getActivity(), marker.getTitle() + " " + marker.getTag(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getContext(), RestaurantActivity.class);
                     Bundle myBundle = new Bundle();
                     myBundle.putString("RESTAURANT_PLACE_ID", (String) marker.getTag());

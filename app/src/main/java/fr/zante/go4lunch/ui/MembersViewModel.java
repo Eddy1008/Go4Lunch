@@ -9,6 +9,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import fr.zante.go4lunch.data.GooglePlacesRepository;
 import fr.zante.go4lunch.data.MembersRepository;
@@ -25,7 +26,7 @@ public class MembersViewModel extends ViewModel {
     // DATA
     private LiveData<List<Member>> membersData;
     private LiveData<List<RestaurantJson>> restaurantsData;
-    private MutableLiveData<List<RestaurantJson>> filteredListMutableLiveData = new MutableLiveData<>();
+    private final MutableLiveData<List<RestaurantJson>> filteredListMutableLiveData = new MutableLiveData<>();
     private LiveData<Member> activeMember;
     private LiveData<List<SelectedRestaurant>> selectedRestaurantsData;
     private String searchInfo;
@@ -108,16 +109,6 @@ public class MembersViewModel extends ViewModel {
     public LiveData<List<SelectedRestaurant>> getSelectedRestaurants() { return this.selectedRestaurantsData; }
 
 
-    // ****************************************
-    // ***** SELECTED RESTAURANTS MEMBERS *****
-    // ****************************************
-
-    public LiveData<List<Member>> getSelectedRestaurantMembersJoiningList(String selectedRestaurantId) {
-        LiveData<List<Member>> myList = repository.getSelectedRestaurantMemberLiveDataList(selectedRestaurantId);
-        return myList;
-    }
-
-
     // **************************
     // ********* SHARED *********
     // **************************
@@ -125,22 +116,22 @@ public class MembersViewModel extends ViewModel {
     // User Name
     // Set in MainActivity
     // For use in ListviewFragment for sending to RestaurantActivity
-    private MutableLiveData<String> myUserName = new MutableLiveData<>();
+    private final MutableLiveData<String> myUserName = new MutableLiveData<>();
     public void setMyUserName(String userName) { myUserName.setValue(userName); }
     public String getMyUserName() { return myUserName.getValue(); }
 
     // User Position
     // Set in MapviewFragment
     // For use in ListviewFragment
-    private MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
+    private final MutableLiveData<LatLng> myLatLng = new MutableLiveData<>();
     public void setMyLatLng(LatLng myNewLatLng) {
         myLatLng.setValue(myNewLatLng);
     }
     public double getMyLat() {
-        return myLatLng.getValue().latitude;
+        return Objects.requireNonNull(myLatLng.getValue()).latitude;
     }
     public double getMyLng() {
-        return myLatLng.getValue().longitude;
+        return Objects.requireNonNull(myLatLng.getValue()).longitude;
     }
 
 }

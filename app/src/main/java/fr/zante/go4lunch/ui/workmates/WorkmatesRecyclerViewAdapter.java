@@ -16,7 +16,7 @@ import fr.zante.go4lunch.model.Member;
 public class WorkmatesRecyclerViewAdapter extends RecyclerView.Adapter<WorkmatesItemViewHolder> {
 
     private List<Member> members;
-    private String userName;
+    private final String userName;
 
     public WorkmatesRecyclerViewAdapter(List<Member> members, String userName) {
         this.members = members;

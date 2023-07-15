@@ -87,11 +87,6 @@ public class RestaurantDetailViewModel extends ViewModel {
 
     public LiveData<List<SelectedRestaurant>> getSelectedRestaurants() { return this.selectedRestaurantsData; }
 
-    public LiveData<SelectedRestaurant> getSelectedRestaurantById(String selectedRestaurantId) {
-        LiveData<SelectedRestaurant> mySelectedRestaurantById =  repository.getSelectedRestaurantById(selectedRestaurantId);
-        return mySelectedRestaurantById;
-    }
-
     public void deleteSelectedRestaurant(String selectedRestaurantId) { repository.deleteSelectedRestaurant(selectedRestaurantId);}
 
     public void updateSelectedRestaurant(SelectedRestaurant selectedRestaurant) {
@@ -114,11 +109,6 @@ public class RestaurantDetailViewModel extends ViewModel {
     }
 
     public LiveData<List<Member>> getSelectedRestaurantMembers() { return this.selectedRestaurantMembersData; }
-
-    public LiveData<List<Member>> getActiveMemberSelectedRestaurantMembersJoiningList(String activeMemberSelectedRestaurantId) {
-        LiveData<List<Member>> myList = repository.getSelectedRestaurantMemberLiveDataList(activeMemberSelectedRestaurantId);
-        return myList;
-    }
 
     public void deleteMemberToSelectedRestaurantMemberList(Member activeMember, String selectedRestaurantId) {
         repository.deleteMemberToSelectedRestaurantMemberList(activeMember, selectedRestaurantId);

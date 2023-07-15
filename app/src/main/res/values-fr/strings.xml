@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- AndroidManifest -->
+    <string name="app_name">Go4Lunch</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_register">Register</string>
+    <string name="title_activity_twitter">Twitter</string>
+
+    <!-- LAYOUT -->
+    <!-- activity_login -->
+    <string name="activity_login_title">Go4Lunch</string>
+    <string name="activity_login_subtitle">Trouvez un bon restaurant et invitez vos collègues à déjeuner</string>
+    <string name="activity_login_email">Email</string>
+    <string name="activity_login_password">Mot de passe</string>
+    <string name="activity_login_forgot_password">Mot de passe oublié ?</string>
+    <string name="activity_login_button">SE CONNECTER</string>
+    <string name="activity_login_new_account">Créer un compte</string>
+    <string name="activity_login_separator">OU</string>
+    <string name="activity_login_google_sign_in">SE CONNECTER AVEC GOOGLE</string>
+    <string name="activity_login_twitter_sign_in">SE CONNECTER AVEC TWITTER</string>
+    <string name="activity_login_facebook_sign_in">SE CONNECTER AVEC FACEBOOK</string>
+
+    <!-- activity_main -->
+    <!-- menu.main -->
+    <string name="action_search">Chercher</string>
+    <!-- nav_header_main -->
+    <string name="nav_header_title">Go4Lunch</string>
+    <string name="nav_header_name">John SMITH</string>
+    <string name="nav_header_subtitle">jsmith.1337@gmail.com</string>
+    <string name="nav_header_desc">Portrait utilisateur</string>
+    <!-- activity_main_drawer -->
+    <string name="menu_logout">SE DECONNECTER</string>
+    <string name="menu_settings">PARAMETRES</string>
+    <string name="menu_lunch">VOTRE CHOIX</string>
+    <!-- bottom_nav_menu -->
+    <string name="menu_mapview">CARTE</string>
+    <string name="menu_listview">LISTE</string>
+    <string name="menu_workmates">COLLEGUES</string>
+
+    <!-- activity_register -->
+    <string name="activity_register_title">Inscription</string>
+    <string name="activity_register_email">Email</string>
+    <string name="activity_register_name">Prénom et Nom</string>
+    <string name="activity_register_password">Mot de passe</string>
+    <string name="activity_register_confirm_password">Confirmer mot de passe</string>
+    <string name="activity_register_button">Enregistrer</string>
+    <string name="activity_register_have_account">Déja inscrit ?</string>
+
+    <!-- activity_restaurant -->
+    <string name="activity_restaurant_photo">Photo du restaurant</string>
+    <string name="activity_restaurant_previous_page">bouton retour</string>
+    <string name="activity_restaurant_name">nom du restaurant</string>
+    <string name="activity_restaurant_first_star">première étoile</string>
+    <string name="activity_restaurant_second_star">deuxième étoile</string>
+    <string name="activity_restaurant_third_star">troisième étoile</string>
+    <string name="activity_restaurant_address">Adresse du restaurant</string>
+    <string name="activity_restaurant_phone">APPELER</string>
+    <string name="activity_restaurant_phone_logo">bouton appeler</string>
+    <string name="activity_restaurant_like">J\'AIME</string>
+    <string name="activity_restaurant_like_logo">bouton j\'aime</string>
+    <string name="activity_restaurant_website">SITE</string>
+    <string name="activity_restaurant_website_logo">bouton site</string>
+    <string name="activity_restaurant_fab">bouton selectionner ce restaurant</string>
+    <!-- item_workmates_joining -->
+    <string name="item_workmates_joining_photo">portrait du collegue</string>
+    <string name="item_workmates_joining_text">Ce membre vous rejoint !</string>
+
+    <!-- activity_settings -->
+    <string name="settings_notification_authorisation">Recevoir les notifications</string>
+    <string name="settings_previous_page_button">bouton retour</string>
+
+    <!-- fragment_listview -->
+    <!-- item_restaurant -->
+    <string name="item_restaurant_name">Nom du restaurant</string>
+    <string name="item_restaurant_address">123 adresse du restaurant</string>
+    <string name="item_restaurant_opening_info">info ouverture</string>
+    <string name="item_restaurant_distance">123m</string>
+    <string name="item_restaurant_subscription">(X)</string>
+    <string name="item_restaurant_subscription_logo">logo nombre de participant</string>
+    <string name="item_restaurant_first_star">première étoile</string>
+    <string name="item_restaurant_second_star">deuxième étoile</string>
+    <string name="item_restaurant_third_star">troisième étoile</string>
+    <string name="item_restaurant_photo">Photo du restaurant</string>
+
+    <!-- fragment_mapview -->
+    <string name="action_localise_my_position">Me localiser</string>
+
+    <!-- fragment_workmates -->
+    <!-- item_workmates -->
+    <string name="item_workmates_photo">photo du collegue</string>
+    <string name="item_workmates_info">Ce membre a choisi: xxx</string>
+
+
+    <!-- NOTIFICATION -->
+    <!-- NotificationService -->
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="notification_service_channel_name">Firebase Messages</string>
+    <!-- NotificationWorkManager -->
+    <string name="notification_work_manager_title">Bon appétit !</string>
+    <string name="notification_work_manager_no_choice">Tu n\'as pas fait ton choix pour ce midi !</string>
+    <string name="notification_work_manager_alone">Tu manges seul ce midi !</string>
+    <string name="notification_work_manager_workmates_part_one">Ce midi vous serez </string>
+    <string name="notification_work_manager_workmates_part_two">pour déjeuner ! Toi et </string>
+
+
+    <!-- UI -->
+    <!-- SettingsActivity -->
+    <string name="settings_activity_channel_name">Firebase Messages</string>
+    <string name="settings_activity_channel_description">Canal pour notifications quotidiennes</string>
+
+    <!-- ListviewFragment -->
+    <!-- ListviewItemViewHolder -->
+    <string name="listview_opening_info_unknown">Non renseigné</string>
+    <string name="listview_opening_info_open">Ouvert</string>
+    <string name="listview_opening_info_closed">Fermé</string>
+
+    <!-- LoginActivity -->
+    <string name="login_activity_mail_error">Format email non valide !</string>
+    <string name="login_activity_password_error">Le mot de passe doit contenir au moins 6 caractères !</string>
+    <string name="login_activity_upcoming_feature">Fonctionnalité à venir</string>
+    <string name="login_activity_new_account_google">Compte créé</string>
+    <string name="login_activity_welcome_back">Bienvenu</string>
+
+    <!-- RegisterActivity -->
+    <string name="register_activity_mail_error">Format email non valide !</string>
+    <string name="register_activity_name_error">Entrez votre nom, 4 caractères minimum !</string>
+    <string name="register_activity_password_error">Le mot de passe doit contenir au moins 6 caractères !</string>
+    <string name="register_activity_confirm_password_error">Les mots de passe sont differents !</string>
+    <string name="register_activity_new_account">Compte créé</string>
+
+    <!-- RestaurantActivity -->
+    <string name="no_website_available">Pas de site pour le moment</string>
+
+    <!-- RestaurantDetailItemViewHolder -->
+    <string name="restaurant_detail_item_view_holder_info">a choisi ce restaurant !</string>
+
+    <!-- WorkmatesItemViewHolder -->
+    <string name="workmates_item_view_holder_no_choice">n\'a pas encore choisi !</string>
+    <string name="workmates_item_view_holder_no_choice_toast">Ce collègue n\'a pas encore fait son choix !</string>
+    <string name="workmates_item_view_holder_choice_made">a choisi :</string>
+
+    <!-- MainActivity -->
+    <string name="make_a_choice">Faites un choix puis rééssayer !</string>
+
+</resources>

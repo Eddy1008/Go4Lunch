@@ -13,7 +13,7 @@ public class NotificationRepository {
     private static final String TAG_DAILY_NOTIFICATION_WORKER = "daily_notification_worker";
 
     public void scheduleDailyNotificationWorker(Context context, long initialDelayMillis) {
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorkManager.class, 30*60*1000, TimeUnit.MILLISECONDS)
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorkManager.class, 1, TimeUnit.DAYS)
                 .setInitialDelay(initialDelayMillis, TimeUnit.MILLISECONDS)
                 .addTag(TAG_DAILY_NOTIFICATION_WORKER)
                 .build();

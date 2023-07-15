@@ -1,6 +1,5 @@
 package fr.zante.go4lunch.data;
 
-import fr.zante.go4lunch.model.RestaurantJson;
 import fr.zante.go4lunch.model.RestaurantResultById;
 import fr.zante.go4lunch.model.RestaurantsResult;
 import retrofit2.Call;
