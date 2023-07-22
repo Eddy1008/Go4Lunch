@@ -1,6 +1,8 @@
 package fr.zante.go4lunch.model;
 
-public class Member {
+import java.io.Serializable;
+
+public class Member implements Serializable {
 
     private String memberId;
     private String name;
