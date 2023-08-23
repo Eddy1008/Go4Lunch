@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import fr.zante.go4lunch.data.GooglePlacesRepository;
 import fr.zante.go4lunch.data.MembersRepository;
 import fr.zante.go4lunch.data.RetrofitService;
@@ -16,6 +18,9 @@ import fr.zante.go4lunch.ui.twitter.TwitterViewModel;
 public class ViewModelFactory implements ViewModelProvider.Factory{
 
     private static ViewModelFactory factory;
+
+    // Database
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public static  ViewModelFactory getInstance() {
         if (factory == null) {
@@ -32,7 +37,7 @@ public class ViewModelFactory implements ViewModelProvider.Factory{
             RetrofitService.getPlacesApi()
     );
 
-    private final MembersRepository membersRepository = MembersRepository.getInstance();
+    private final MembersRepository membersRepository = MembersRepository.getInstance(database);
 
     @NonNull
     @Override

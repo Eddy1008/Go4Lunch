@@ -21,11 +21,11 @@ import fr.zante.go4lunch.model.SelectedRestaurant;
 public class MembersRepository {
 
     // Database
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    FirebaseDatabase database;
 
     // DatabaseRef :
-    DatabaseReference myRef = database.getReference("members");
-    DatabaseReference mySelectedRestaurantsRef = database.getReference("selectedRestaurants");
+    DatabaseReference myRef;
+    DatabaseReference mySelectedRestaurantsRef;
 
     private final List<Member> myMembersList = new ArrayList<>();
     private final List<String> myActiveMemberLikeList = new ArrayList<>();
@@ -34,11 +34,17 @@ public class MembersRepository {
 
     private static MembersRepository repository;
 
-    public static MembersRepository getInstance() {
+    public static MembersRepository getInstance(FirebaseDatabase database) {
         if (repository == null) {
-            repository = new MembersRepository();
+            repository = new MembersRepository(database);
         }
         return repository;
+    }
+
+    MembersRepository(FirebaseDatabase database) {
+        this.database = database;
+        this.myRef = database.getReference("members");
+        this.mySelectedRestaurantsRef = database.getReference("selectedRestaurants");
     }
 
 
@@ -210,36 +216,6 @@ public class MembersRepository {
             }
         });
         return selectedRestaurantsMutableLiveData;
-    }
-
-    /**
-     * @param selectedRestaurantId selected Restaurant Id we want to return
-     * @return the selected restaurant with the id sent
-     */
-    public LiveData<SelectedRestaurant> getSelectedRestaurantById (String selectedRestaurantId) {
-        MutableLiveData<SelectedRestaurant> selectedRestaurantByIdMutableLiveData = new MutableLiveData<>();
-        mySelectedRestaurantsRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                SelectedRestaurant mySelectedRestaurant = new SelectedRestaurant();
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    SelectedRestaurant selectedRestaurantById = data.getValue(SelectedRestaurant.class);
-                    if (selectedRestaurantById != null) {
-                        if (selectedRestaurantById.getRestaurantId().equals(selectedRestaurantId)) {
-                            mySelectedRestaurant = selectedRestaurantById;
-                        }
-
-                    }
-                }
-                selectedRestaurantByIdMutableLiveData.setValue(mySelectedRestaurant);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-        return selectedRestaurantByIdMutableLiveData;
     }
 
     /**
