@@ -47,6 +47,10 @@ public class MembersRepository {
         this.mySelectedRestaurantsRef = database.getReference("selectedRestaurants");
     }
 
+    public static void resetInstance() {
+        repository = null;
+    }
+
 
     // *******************************
     // *********** MEMBERS ***********
